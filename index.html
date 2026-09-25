@@ -1,0 +1,2911 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>捷運採點全攻略</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=LXGW+WenKai+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>:root {
+  --ground: #eef0f4;
+  --surface: #ffffff;
+  --sunken: #e4e7ee;
+  --ink: #171a22;
+  --muted: #5d6272;
+  --rule: #d5d9e2;
+  --accent: #4f33a8;
+  --accent-soft: #ece8fa;
+  --on-accent: #ffffff;
+  --warn: #9a5b00;
+  --warn-soft: #fff3dc;
+  --danger: #b3261e;
+
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-seal: "LXGW WenKai TC", "Kaiti TC", "DFKai-SB", "BiauKai", serif;
+  --font-data: "Barlow Semi Condensed", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+
+  --s-1: 0.75rem;
+  --s0: 0.875rem;
+  --s1: 1rem;
+  --s2: 1.25rem;
+  --s3: 1.625rem;
+  --s4: 2.125rem;
+  --radius: 10px;
+  --map-bg: #fbfbfd;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #101218;
+    --surface: #191c24;
+    --sunken: #22262f;
+    --ink: #e8e9ef;
+    --muted: #9aa0ae;
+    --rule: #2c313c;
+    --accent: #a995f4;
+    --accent-soft: #2a2540;
+    --on-accent: #16131f;
+    --warn: #f0b75a;
+    --warn-soft: #2e2413;
+    --danger: #ff8a80;
+    --map-bg: #14161d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #101218;
+  --surface: #191c24;
+  --sunken: #22262f;
+  --ink: #e8e9ef;
+  --muted: #9aa0ae;
+  --rule: #2c313c;
+  --accent: #a995f4;
+  --accent-soft: #2a2540;
+  --on-accent: #16131f;
+  --warn: #f0b75a;
+  --warn-soft: #2e2413;
+  --danger: #ff8a80;
+  --map-bg: #14161d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--ground); }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--s0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-inline: max(16px, 2.5vw);
+  padding-block: 20px 48px;
+}
+
+/* ---------- 刊頭 ---------- */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 20px;
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.seal {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  box-shadow: inset 0 0 0 2px var(--surface), inset 0 0 0 4px var(--accent);
+  color: var(--accent);
+  font-family: var(--font-seal);
+  font-size: 26px;
+  transform: rotate(-8deg);
+  flex: none;
+}
+h1 {
+  margin: 0;
+  font-family: var(--font-seal);
+  font-weight: 700;
+  font-size: var(--s4);
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+.sub { margin: 2px 0 0; color: var(--muted); max-width: 42ch; }
+.data-note {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--s-1);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 版面 ---------- */
+.flow { display: flex; flex-direction: column; gap: 28px; }
+.plan { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (min-width: 960px) {
+  .plan { grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; }
+  .panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.mapcard { padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--s1);
+  font-weight: 700;
+}
+.step-no {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-data);
+  font-size: var(--s0);
+  flex: none;
+}
+.mapcard .tally { font-size: var(--s1); }
+.tally-box { display: flex; align-items: center; gap: 10px; }
+.clear-done { color: var(--danger); border-color: currentColor !important; }
+.clear-done:hover { background: var(--danger); color: var(--surface); }
+.clear-done:disabled { opacity: 0.4; cursor: default; background: none; color: var(--muted); }
+.undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding: 6px 6px 6px 14px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: var(--s-1);
+}
+.undo button {
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+.list-picker { border-top: 1px solid var(--rule); padding-top: 10px; }
+.list-picker summary { cursor: pointer; color: var(--muted); font-size: var(--s-1); }
+.list-picker .picker { margin-top: 12px; }
+
+.block { padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.block + .block { border-top: 1px solid var(--rule); }
+.block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.label {
+  margin: 0;
+  font-size: var(--s-1);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.tally { font-family: var(--font-data); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--accent); }
+
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field > label, .flabel { font-size: var(--s-1); color: var(--muted); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+select, input[type="time"], input[type="number"] {
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--ground);
+}
+.unit { display: flex; align-items: center; gap: 6px; }
+.unit input { font-family: var(--font-data); font-size: var(--s1); font-weight: 600; }
+.unit span { color: var(--muted); font-size: var(--s-1); flex: none; }
+input[type="time"] { font-family: var(--font-data); font-size: var(--s1); font-weight: 600; }
+.hint { margin: 0; color: var(--muted); font-size: var(--s-1); }
+
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { text-align: center; padding: 8px 4px; cursor: pointer; background: var(--ground); font-size: var(--s-1); }
+.seg label + input + label { border-left: 1px solid var(--rule); }
+.seg input:checked + label { background: var(--ink); color: var(--surface); font-weight: 700; }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: -2px; }
+#end { margin-top: 6px; }
+
+.bulk { display: flex; flex-wrap: wrap; gap: 6px; }
+.bulk button, .ghost {
+  border: 1px solid var(--rule);
+  background: transparent;
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: var(--s-1);
+  cursor: pointer;
+}
+.bulk button:hover, .ghost:hover { border-color: var(--ink); }
+
+/* ---------- 車站點選 ---------- */
+.picker { display: flex; flex-direction: column; gap: 14px; }
+.line-group { display: flex; flex-direction: column; gap: 8px; }
+.line-head { display: flex; align-items: center; gap: 8px; }
+.line-swatch { width: 18px; height: 6px; border-radius: 3px; background: var(--line); flex: none; }
+.line-title { font-weight: 700; }
+.line-count { font-family: var(--font-data); font-variant-numeric: tabular-nums; color: var(--muted); margin-right: auto; }
+.line-head button { border: 0; background: none; color: var(--muted); font-size: var(--s-1); cursor: pointer; padding: 2px 4px; }
+.line-head button:hover { color: var(--ink); text-decoration: underline; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px 3px 3px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--ground);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: var(--s-1);
+  line-height: 1.4;
+}
+.chip .code {
+  font-family: var(--font-data);
+  font-weight: 600;
+  font-size: 11px;
+  min-width: 34px;
+  text-align: center;
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.chip[aria-pressed="false"] { background: var(--surface); color: var(--ink); border-color: var(--ink); font-weight: 500; }
+.chip[aria-pressed="false"] .code { background: var(--line); color: var(--line-ink, #fff); border-color: var(--line); }
+.chip[aria-pressed="true"] { text-decoration: line-through; }
+.chip:hover { border-color: var(--ink); }
+
+.actions {
+  position: sticky;
+  bottom: 0;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+.primary {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.primary:disabled { opacity: 0.6; cursor: progress; }
+
+/* ---------- 結果 ---------- */
+.result { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.note { margin: 0; padding: 10px 14px; border-radius: 8px; background: var(--accent-soft); color: var(--ink); }
+.error { margin: 0; padding: 10px 14px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-weight: 500; }
+.progress { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: var(--s-1); }
+.bar { flex: 1; height: 4px; background: var(--sunken); border-radius: 2px; overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.15s linear; }
+
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.option {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+}
+.option:hover { border-color: var(--ink); }
+.option[aria-selected="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.option .tag { font-size: var(--s-1); font-weight: 700; letter-spacing: 0.1em; color: var(--muted); }
+.option[aria-selected="true"] .tag { color: var(--accent); }
+.option .big { font-family: var(--font-data); font-size: var(--s3); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.option .big small { font-size: var(--s0); font-weight: 600; color: var(--muted); margin-left: 2px; }
+.option .xf { font-size: var(--s-1); color: var(--muted); }
+.option .xf b { font-family: var(--font-data); font-size: var(--s1); color: var(--ink); }
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  padding: 12px 0;
+  border-block: 1px solid var(--rule);
+}
+.summary:empty { display: none; }
+.metric { display: flex; flex-direction: column; }
+.metric dt { font-size: var(--s-1); color: var(--muted); }
+.metric dd { margin: 0; font-family: var(--font-data); font-size: var(--s2); font-weight: 700; font-variant-numeric: tabular-nums; }
+.summary .copy { margin-left: auto; align-self: center; }
+
+.day { display: flex; flex-direction: column; gap: 0; }
+.day + .day { margin-top: 26px; }
+.day-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0 0 10px;
+  font-size: var(--s1);
+}
+.day-head strong { font-family: var(--font-seal); font-size: var(--s2); letter-spacing: 0.06em; }
+.day-head span { font-family: var(--font-data); color: var(--muted); font-variant-numeric: tabular-nums; }
+.day-head em { font-style: normal; color: var(--muted); font-size: var(--s-1); }
+
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 46px 64px minmax(0, 1fr); column-gap: 12px; }
+.tl time {
+  font-family: var(--font-data);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  padding-top: 2px;
+  text-align: right;
+}
+.tl-stamp { align-items: center; padding: 4px 0; }
+.tl-stamp time { color: var(--ink); padding-top: 0; }
+.stamp {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2.5px solid var(--accent);
+  box-shadow: inset 0 0 0 2px var(--surface), inset 0 0 0 3.5px var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+  font-family: var(--font-seal);
+  line-height: 1.05;
+  text-align: center;
+  transform: rotate(var(--tilt, -6deg));
+  padding: 6px;
+  word-break: break-all;
+}
+.stamp.l2 { font-size: 18px; }
+.stamp.l3 { font-size: 15px; }
+.stamp.l4 { font-size: 12.5px; }
+.stamp.l5 { font-size: 11px; }
+.stamp.end { border-style: dashed; box-shadow: none; color: var(--muted); border-color: var(--muted); }
+.st-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.st-name { font-size: var(--s1); font-weight: 700; }
+.badge {
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-size: 11px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--line);
+  color: var(--line-ink, #fff);
+  font-variant-numeric: tabular-nums;
+}
+.st-meta { color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
+
+.tl-leg { min-height: 40px; }
+.rail { justify-self: center; width: 6px; display: flex; flex-direction: column; gap: 3px; padding-block: 2px; }
+.rail span { flex: var(--grow, 1) 1 0; min-height: 14px; background: var(--line); border-radius: 3px; }
+.rides { display: flex; flex-direction: column; gap: 6px; padding-block: 6px 10px; }
+.ride { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.ride .pill {
+  font-size: var(--s-1);
+  font-weight: 700;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--line);
+  color: var(--line-ink, #fff);
+  white-space: nowrap;
+}
+.ride .dir { font-weight: 500; }
+.ride .dim { color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
+.xfer { color: var(--warn); font-size: var(--s-1); font-weight: 500; }
+
+.empty { color: var(--muted); padding: 24px 0; }
+
+.method { border-top: 1px solid var(--rule); padding-top: 12px; color: var(--muted); }
+.method summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.method-body { max-width: 68ch; }
+.method-body p { margin: 10px 0; }
+.sources { padding-left: 1.2em; font-size: var(--s-1); }
+.sources a { color: var(--accent); }
+
+/* ---------- 路網圖 ---------- */
+.map-box {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--map-bg);
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.map-box.mm-zoomed { touch-action: none; }
+.map-box.mm-zoomed .mmap-svg { cursor: grab; }
+.mmap-svg { display: block; width: 100%; height: auto; max-height: min(88vh, 1100px); }
+.mm-ctl { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 4px; }
+.mm-ctl button {
+  min-width: 40px;
+  height: 36px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--font-data);
+  font-weight: 700;
+  font-size: var(--s1);
+  cursor: pointer;
+}
+.mm-ctl button[data-z="fit"] { font-family: var(--font-body); font-size: var(--s-1); }
+.mm-ctl button:hover { border-color: var(--ink); }
+
+.mm-line { fill: none; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+.mm-line-ex { stroke-opacity: 0.45; }
+.mm-dot { fill: var(--surface); stroke-width: 3.5; }
+.mm-inter .mm-dot { stroke: var(--ink); stroke-width: 3.5; }
+.mm-ex .mm-dot { stroke: var(--muted); stroke-width: 2.5; }
+.mm-ex .mm-label { fill: var(--muted); opacity: 0.7; font-size: 11px; }
+.mm-check { fill: none; stroke: var(--on-accent); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; display: none; }
+.mm-label {
+  fill: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  paint-order: stroke;
+  stroke: var(--map-bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.mm-vert { writing-mode: vertical-rl; }
+.mm-st[tabindex] { cursor: pointer; }
+.mm-st[tabindex]:focus-visible { outline: none; }
+.mm-st[tabindex]:focus-visible .mm-dot { stroke: var(--accent); stroke-width: 5; }
+.mm-hit { fill: transparent; }
+
+[data-mode="progress"] .is-done .mm-dot { fill: var(--accent); stroke: var(--accent); }
+[data-mode="progress"] .is-done .mm-check { display: block; }
+[data-mode="progress"] .is-done .mm-label { fill: var(--muted); }
+[data-mode="progress"] .mm-st[tabindex]:not(.is-done) .mm-label { font-weight: 700; }
+@media (hover: hover) {
+  [data-mode="progress"] .mm-st[tabindex]:hover .mm-dot { stroke-width: 6; }
+}
+
+[data-mode="route"] .mm-line { stroke-opacity: 0.16; stroke-width: 6; }
+[data-mode="route"] .mm-dot { stroke-opacity: 0.5; }
+.mm-ride { fill: none; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.mm-walk { fill: none; stroke: var(--ink); stroke-width: 4; stroke-dasharray: 2 7; stroke-linecap: round; }
+.mm-faded { opacity: 0.22; }
+[data-mode="route"] .is-dim .mm-label { opacity: 0.35; }
+[data-mode="route"] .is-dim .mm-dot { opacity: 0.4; }
+[data-mode="route"] .on-route .mm-dot { stroke-opacity: 1; }
+[data-mode="route"] .is-stop .mm-label { font-weight: 700; }
+.mm-mark { pointer-events: none; }
+.mm-num circle { fill: var(--accent); stroke: var(--surface); stroke-width: 2.5; }
+.mm-num text { fill: var(--on-accent); font-family: var(--font-data); font-weight: 700; font-size: 14px; text-anchor: middle; }
+.mm-num3 text { font-size: 11px; }
+.mm-num.mm-faded { opacity: 0.35; }
+.mm-start circle { fill: var(--ink); stroke: var(--surface); stroke-width: 2.5; }
+.mm-start text { fill: var(--surface); font-weight: 700; font-size: 13px; text-anchor: middle; }
+
+/* ---------- 路線 ---------- */
+.route { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (min-width: 960px) {
+  .route { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 28px; }
+  .route-map { position: sticky; top: 84px; }
+  .route-map .mmap-svg { max-height: calc(100vh - 150px); }
+}
+.route-map { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.day-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--ground);
+  padding-block: 8px;
+  margin-block: -8px;
+  scrollbar-width: thin;
+}
+.day-tabs button {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 120px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.day-tabs button strong { font-size: var(--s1); }
+.day-tabs button small { font-family: var(--font-data); font-size: var(--s-1); color: var(--muted); font-variant-numeric: tabular-nums; }
+.day-tabs button:hover { border-color: var(--ink); }
+.day-tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.day-tabs button[aria-selected="true"] small { color: var(--surface); opacity: 0.8; }
+
+.seg2 { grid-template-columns: repeat(2, 1fr); }
+.days { display: flex; flex-direction: column; gap: 10px; }
+.day-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 4px 8px;
+  align-items: end;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--sunken);
+}
+.day-row .day-no { grid-column: 1 / -1; font-weight: 700; font-size: var(--s-1); }
+.day-row select, .day-row input[type="time"] { background: var(--surface); min-height: 36px; padding: 4px 8px; }
+.day-row .field:nth-of-type(3) { grid-column: 1; }
+.day-row .field:nth-of-type(4) { grid-column: 2; }
+.day-row .now { grid-column: 1 / 3; justify-self: start; margin-top: 2px; }
+.day-del {
+  grid-column: 3;
+  grid-row: 2;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  width: 32px;
+  height: 36px;
+  border-radius: 6px;
+}
+.day-del:hover { color: var(--danger); background: var(--surface); }
+.add-day { align-self: flex-start; }
+.tl-start { align-items: center; padding: 2px 0 4px; }
+.tl-start time { color: var(--ink); padding-top: 0; }
+.start-dot {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+  font-size: var(--s-1);
+}
+.tl-start .st-meta { margin-left: 2px; }
+.day-head em.over { color: var(--warn); font-weight: 700; }
+.tl-stamp.flash { animation: flash 1.6s ease-out; border-radius: 8px; }
+@keyframes flash { 0%, 30% { background: var(--accent-soft); } 100% { background: transparent; } }
+
+@media (max-width: 480px) {
+  h1 { font-size: var(--s3); }
+  .tl li { grid-template-columns: 40px 52px minmax(0, 1fr); column-gap: 8px; }
+  .stamp { width: 50px; height: 50px; }
+  .stamp.l2 { font-size: 16px; }
+  .stamp.l3 { font-size: 13px; }
+  .stamp.l4 { font-size: 11px; }
+  .stamp.l5 { font-size: 9.5px; }
+  .mm-ctl button { min-width: 34px; height: 30px; font-size: var(--s0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar span { transition: none; }
+  .tl-stamp.flash { animation: none; background: var(--accent-soft); }
+}
+</style>
+
+<div class="app">
+  <header class="masthead">
+    <div class="brand">
+      <span class="seal" aria-hidden="true">採</span>
+      <div>
+        <h1>捷運採點全攻略</h1>
+        <p class="sub">在地圖上點出集過的站,算出剩下的站怎麼搭最快。</p>
+      </div>
+    </div>
+    <p class="data-note" id="data-note"></p>
+  </header>
+
+  <main class="flow">
+    <section class="plan" aria-label="標記進度與出發條件">
+      <section class="card mapcard">
+        <div class="card-head">
+          <h2 class="step"><span class="step-no">1</span>點地圖標出已經集到的站</h2>
+          <div class="tally-box">
+            <span class="tally" id="tally"></span>
+            <button type="button" class="ghost clear-done" data-bulk="none">清空已集</button>
+          </div>
+        </div>
+        <p class="undo" id="undo" role="status" hidden><span id="undo-text"></span><button type="button" id="undo-btn">復原</button></p>
+        <p class="hint">點一下車站打勾 = 已集,再點一下取消。<b>+</b> / <b>−</b> 或兩指縮放,放大後可拖曳。灰色的環狀線站不在活動裡。</p>
+        <div id="pmap" class="map-box"></div>
+        <div class="bulk">
+          <button type="button" data-bulk="all">全部標成已集</button>
+          <button type="button" data-bulk="invert">反轉</button>
+        </div>
+        <details class="list-picker">
+          <summary>改用清單點選</summary>
+          <div id="picker" class="picker"></div>
+        </details>
+      </section>
+
+      <aside class="card panel" aria-label="條件設定">
+        <section class="block">
+          <h2 class="step"><span class="step-no">2</span>出發條件</h2>
+          <div class="field">
+            <span class="flabel" id="daymode-label">每天的起點與終點</span>
+            <div class="seg seg2" role="radiogroup" aria-labelledby="daymode-label">
+              <input type="radio" name="dayMode" id="dm-same" value="same"><label for="dm-same">每天相同</label>
+              <input type="radio" name="dayMode" id="dm-each" value="each"><label for="dm-each">每天分別設定</label>
+            </div>
+          </div>
+          <div id="days" class="days"></div>
+          <button type="button" id="add-day" class="ghost add-day" hidden>+ 加一天</button>
+          <div class="row2">
+            <div class="field">
+              <label for="stay">每站停留</label>
+              <div class="unit"><input id="stay" type="number" min="1" max="30" step="1" inputmode="numeric"><span>分鐘</span></div>
+            </div>
+            <div class="field">
+              <label for="profile">班距時段</label>
+              <select id="profile"></select>
+            </div>
+          </div>
+          <p class="hint">停留時間 = 出站、找票卡查詢機掃碼、再進站。每站用同一個值。天數自動決定:用最少的天數排完,每天都在收工前結束。今天比較晚出門,按第 1 天的「現在出發」,出發時間就會改成現在。</p>
+        </section>
+        <div class="actions">
+          <button id="go" class="primary" type="button">計算路線</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="result" id="result" aria-live="polite">
+      <h2 class="step"><span class="step-no">3</span>建議路線</h2>
+      <p id="idle-note" class="note" hidden>先在上面的地圖點出已經集到的站、設定出發條件,再按「計算路線」。</p>
+      <div id="progress" class="progress" hidden>
+        <div class="bar"><span id="bar"></span></div>
+        <span id="progress-text">計算中</span>
+      </div>
+      <p id="error" class="error" hidden></p>
+      <div id="options" class="options" role="tablist" aria-label="路線方案"></div>
+      <div id="summary" class="summary"></div>
+      <p id="plan-note" class="error" hidden></p>
+      <div id="day-tabs" class="day-tabs" role="tablist" aria-label="顯示哪一天"></div>
+      <div class="route">
+        <div class="route-map">
+          <div id="rmap" class="map-box"></div>
+          <p class="hint">數字是集章順序,粗線是要搭的區段、虛線是步行。點地圖上的站會跳到對應的步驟。</p>
+        </div>
+        <div id="itinerary" class="itinerary"></div>
+      </div>
+
+      <details class="method">
+        <summary>怎麼算的</summary>
+        <div class="method-body">
+          <p>每個採點都要出站,所以兩站之間的每段行程彼此獨立。先用最短路徑算出任兩站之間的最佳搭法,再決定哪幾站排哪一天、每天的順序:先用最便宜插入排出初解,再反覆「拆掉一群相近的站、插回最便宜的位置」加上區域搜尋改善。這是啟發式搜尋,不保證最佳,但每天都會在收工前結束。</p>
+          <p>多天的時候,除了總時間,也會讓最後一天盡量早收工:今天只剩一兩個小時也會先排幾站,不會整天留空。</p>
+          <p>一段行程的時間 = 候車(有效班距的一半)+ 行駛秒數 + 途經站停靠秒數 + 轉乘步行。共用區段(例如往蘆洲、往迴龍都會停的頂溪)兩種車都能搭,班距合併計算。</p>
+          <p>總時間與換車次數會互相拉扯。系統把「一次換車折合幾分鐘」從 0 掃到 60 分鐘各算一次,只留下沒有被其他方案在兩個分數上同時勝過的路線。</p>
+          <p>換車次數只算站內換車,出站集章後重新進站不算。地圖是示意圖,位置不代表實際距離。</p>
+          <ul class="sources" id="sources"></ul>
+        </div>
+      </details>
+    </section>
+  </main>
+</div>
+
+<script>window.METRO_NETWORK = {"generated":"2026-09-25","sources":{"travelTime":{"title":"臺北捷運系統相鄰兩站間之行駛時間、停靠站時間","url":"https://data.taipei/dataset/detail?id=513e97fe-6a98-4a0d-b7dc-11122c8638d4","updated":["20250603","20260830"]},"headway":{"title":"臺北捷運路線發車班距頻率資料","url":"https://data.taipei/dataset/detail?id=6d15899a-ff77-4a39-8203-a3addfe1fa28"},"transfer":{"title":"TDX LineTransfer 快照(rocptx)","url":"https://github.com/melixyen/rocptx"},"circularHeadway":{"title":"新北捷運 2025-08-01 環狀線班距調整公告","url":"https://www.ntmetro.com.tw/basic/?mode=detail&node=795"}},"profiles":{"weekday_peak":"平日尖峰","weekday_off":"平日離峰","holiday":"假日"},"lines":{"BR":{"name":"文湖線","color":"#B57A25"},"R":{"name":"淡水信義線","color":"#D90023"},"G":{"name":"松山新店線","color":"#107547"},"O":{"name":"中和新蘆線","color":"#F5A818"},"BL":{"name":"板南線","color":"#0A59AE"},"Y":{"name":"環狀線","color":"#FFDB00"}},"sameLineTransferMinutes":1.0,"activityExcludeLines":["Y"],"stations":[{"name":"動物園","codes":{"BR":"BR01"},"activity":true},{"name":"木柵","codes":{"BR":"BR02"},"activity":true},{"name":"萬芳社區","codes":{"BR":"BR03"},"activity":true},{"name":"萬芳醫院","codes":{"BR":"BR04"},"activity":true},{"name":"辛亥","codes":{"BR":"BR05"},"activity":true},{"name":"麟光","codes":{"BR":"BR06"},"activity":true},{"name":"六張犁","codes":{"BR":"BR07"},"activity":true},{"name":"科技大樓","codes":{"BR":"BR08"},"activity":true},{"name":"大安","codes":{"BR":"BR09","R":"R05"},"activity":true},{"name":"忠孝復興","codes":{"BR":"BR10","BL":"BL15"},"activity":true},{"name":"南京復興","codes":{"BR":"BR11","G":"G16"},"activity":true},{"name":"中山國中","codes":{"BR":"BR12"},"activity":true},{"name":"松山機場","codes":{"BR":"BR13"},"activity":true},{"name":"大直","codes":{"BR":"BR14"},"activity":true},{"name":"劍南路","codes":{"BR":"BR15"},"activity":true},{"name":"西湖","codes":{"BR":"BR16"},"activity":true},{"name":"港墘","codes":{"BR":"BR17"},"activity":true},{"name":"文德","codes":{"BR":"BR18"},"activity":true},{"name":"內湖","codes":{"BR":"BR19"},"activity":true},{"name":"大湖公園","codes":{"BR":"BR20"},"activity":true},{"name":"葫洲","codes":{"BR":"BR21"},"activity":true},{"name":"東湖","codes":{"BR":"BR22"},"activity":true},{"name":"南港軟體園區","codes":{"BR":"BR23"},"activity":true},{"name":"南港展覽館","codes":{"BR":"BR24","BL":"BL23"},"activity":true},{"name":"廣慈/奉天宮","codes":{"R":"R01"},"activity":true},{"name":"象山","codes":{"R":"R02"},"activity":true},{"name":"台北101/世貿","codes":{"R":"R03"},"activity":true},{"name":"信義安和","codes":{"R":"R04"},"activity":true},{"name":"大安森林公園","codes":{"R":"R06"},"activity":true},{"name":"東門","codes":{"R":"R07","O":"O06"},"activity":true},{"name":"中正紀念堂","codes":{"R":"R08","G":"G10"},"activity":true},{"name":"台大醫院","codes":{"R":"R09"},"activity":true},{"name":"台北車站","codes":{"R":"R10","BL":"BL12"},"activity":true},{"name":"中山","codes":{"R":"R11","G":"G14"},"activity":true},{"name":"雙連","codes":{"R":"R12"},"activity":true},{"name":"民權西路","codes":{"R":"R13","O":"O11"},"activity":true},{"name":"圓山","codes":{"R":"R14"},"activity":true},{"name":"劍潭","codes":{"R":"R15"},"activity":true},{"name":"士林","codes":{"R":"R16"},"activity":true},{"name":"芝山","codes":{"R":"R17"},"activity":true},{"name":"明德","codes":{"R":"R18"},"activity":true},{"name":"石牌","codes":{"R":"R19"},"activity":true},{"name":"唭哩岸","codes":{"R":"R20"},"activity":true},{"name":"奇岩","codes":{"R":"R21"},"activity":true},{"name":"北投","codes":{"R":"R22"},"activity":true},{"name":"新北投","codes":{"R":"R22A"},"activity":true},{"name":"復興崗","codes":{"R":"R23"},"activity":true},{"name":"忠義","codes":{"R":"R24"},"activity":true},{"name":"關渡","codes":{"R":"R25"},"activity":true},{"name":"竹圍","codes":{"R":"R26"},"activity":true},{"name":"紅樹林","codes":{"R":"R27"},"activity":true},{"name":"淡水","codes":{"R":"R28"},"activity":true},{"name":"新店","codes":{"G":"G01"},"activity":true},{"name":"新店區公所","codes":{"G":"G02"},"activity":true},{"name":"七張","codes":{"G":"G03"},"activity":true},{"name":"小碧潭","codes":{"G":"G03A"},"activity":true},{"name":"大坪林","codes":{"G":"G04","Y":"Y07"},"activity":true},{"name":"景美","codes":{"G":"G05"},"activity":true},{"name":"萬隆","codes":{"G":"G06"},"activity":true},{"name":"公館","codes":{"G":"G07"},"activity":true},{"name":"台電大樓","codes":{"G":"G08"},"activity":true},{"name":"古亭","codes":{"G":"G09","O":"O05"},"activity":true},{"name":"小南門","codes":{"G":"G11"},"activity":true},{"name":"西門","codes":{"G":"G12","BL":"BL11"},"activity":true},{"name":"北門","codes":{"G":"G13"},"activity":true},{"name":"松江南京","codes":{"G":"G15","O":"O08"},"activity":true},{"name":"台北小巨蛋","codes":{"G":"G17"},"activity":true},{"name":"南京三民","codes":{"G":"G18"},"activity":true},{"name":"松山","codes":{"G":"G19"},"activity":true},{"name":"南勢角","codes":{"O":"O01"},"activity":true},{"name":"景安","codes":{"O":"O02","Y":"Y11"},"activity":true},{"name":"永安市場","codes":{"O":"O03"},"activity":true},{"name":"頂溪","codes":{"O":"O04"},"activity":true},{"name":"忠孝新生","codes":{"O":"O07","BL":"BL14"},"activity":true},{"name":"行天宮","codes":{"O":"O09"},"activity":true},{"name":"中山國小","codes":{"O":"O10"},"activity":true},{"name":"大橋頭","codes":{"O":"O12"},"activity":true},{"name":"台北橋","codes":{"O":"O13"},"activity":true},{"name":"菜寮","codes":{"O":"O14"},"activity":true},{"name":"三重","codes":{"O":"O15"},"activity":true},{"name":"先嗇宮","codes":{"O":"O16"},"activity":true},{"name":"頭前庄","codes":{"O":"O17","Y":"Y18"},"activity":true},{"name":"新莊","codes":{"O":"O18"},"activity":true},{"name":"輔大","codes":{"O":"O19"},"activity":true},{"name":"丹鳳","codes":{"O":"O20"},"activity":true},{"name":"迴龍","codes":{"O":"O21"},"activity":true},{"name":"三重國小","codes":{"O":"O50"},"activity":true},{"name":"三和國中","codes":{"O":"O51"},"activity":true},{"name":"徐匯中學","codes":{"O":"O52"},"activity":true},{"name":"三民高中","codes":{"O":"O53"},"activity":true},{"name":"蘆洲","codes":{"O":"O54"},"activity":true},{"name":"頂埔","codes":{"BL":"BL01"},"activity":true},{"name":"永寧","codes":{"BL":"BL02"},"activity":true},{"name":"土城","codes":{"BL":"BL03"},"activity":true},{"name":"海山","codes":{"BL":"BL04"},"activity":true},{"name":"亞東醫院","codes":{"BL":"BL05"},"activity":true},{"name":"府中","codes":{"BL":"BL06"},"activity":true},{"name":"板橋","codes":{"BL":"BL07","Y":"Y16"},"activity":true},{"name":"新埔","codes":{"BL":"BL08"},"activity":true},{"name":"江子翠","codes":{"BL":"BL09"},"activity":true},{"name":"龍山寺","codes":{"BL":"BL10"},"activity":true},{"name":"善導寺","codes":{"BL":"BL13"},"activity":true},{"name":"忠孝敦化","codes":{"BL":"BL16"},"activity":true},{"name":"國父紀念館","codes":{"BL":"BL17"},"activity":true},{"name":"市政府","codes":{"BL":"BL18"},"activity":true},{"name":"永春","codes":{"BL":"BL19"},"activity":true},{"name":"後山埤","codes":{"BL":"BL20"},"activity":true},{"name":"昆陽","codes":{"BL":"BL21"},"activity":true},{"name":"南港","codes":{"BL":"BL22"},"activity":true},{"name":"十四張","codes":{"Y":"Y08"},"activity":false},{"name":"秀朗橋","codes":{"Y":"Y09"},"activity":false},{"name":"景平","codes":{"Y":"Y10"},"activity":false},{"name":"中和","codes":{"Y":"Y12"},"activity":false},{"name":"橋和","codes":{"Y":"Y13"},"activity":false},{"name":"中原","codes":{"Y":"Y14"},"activity":false},{"name":"板新","codes":{"Y":"Y15"},"activity":false},{"name":"新埔民生","codes":{"Y":"Y17"},"activity":false},{"name":"幸福","codes":{"Y":"Y19"},"activity":false},{"name":"新北產業園區","codes":{"Y":"Y20"},"activity":false}],"services":[{"id":"淡水-廣慈/奉天宮","stops":["淡水","紅樹林","竹圍","關渡","忠義","復興崗","北投","奇岩","唭哩岸","石牌","明德","芝山","士林","劍潭","圓山","民權西路","雙連","中山","台北車站","台大醫院","中正紀念堂","東門","大安森林公園","大安","信義安和","台北101/世貿","象山","廣慈/奉天宮"],"run":[175,142,150,80,117,135,91,75,109,63,79,94,101,114,90,60,62,68,67,95,175,75,74,90,83,69,150],"dwell":[0,27,27,27,27,27,27,27,27,27,27,27,27,27,27,30,30,30,35,27,30,30,27,30,27,27,27,0],"line":"R","headway":{"weekday_peak":6.0,"weekday_off":9.0,"holiday":9.0},"synthetic":false,"servedBy":["淡水-廣慈/奉天宮"],"effHeadway":{"weekday_peak":6.0,"weekday_off":9.0,"holiday":9.0}},{"id":"北投-大安","stops":["北投","奇岩","唭哩岸","石牌","明德","芝山","士林","劍潭","圓山","民權西路","雙連","中山","台北車站","台大醫院","中正紀念堂","東門","大安森林公園","大安"],"run":[91,75,109,63,79,94,101,114,90,60,62,68,67,95,175,75,74],"dwell":[0,27,27,27,27,27,27,27,27,30,30,30,35,27,30,30,27,0],"line":"R","headway":{"weekday_peak":6.0,"weekday_off":9.0,"holiday":9.0},"synthetic":false,"servedBy":["淡水-廣慈/奉天宮","北投-大安"],"effHeadway":{"weekday_peak":3.0,"weekday_off":4.5,"holiday":4.5}},{"id":"松山-新店","stops":["松山","南京三民","台北小巨蛋","南京復興","松江南京","中山","北門","西門","小南門","中正紀念堂","古亭","台電大樓","公館","萬隆","景美","大坪林","七張","新店區公所","新店"],"run":[138,102,84,92,106,116,86,83,76,87,85,79,122,89,92,78,81,111],"dwell":[0,27,27,33,35,35,28,34,27,38,33,30,29,27,27,27,24,25,0],"line":"G","headway":{"weekday_peak":5.0,"weekday_off":7.0,"holiday":7.0},"synthetic":false,"servedBy":["松山-新店"],"effHeadway":{"weekday_peak":5.0,"weekday_off":7.0,"holiday":7.0}},{"id":"松山-台電大樓","stops":["松山","南京三民","台北小巨蛋","南京復興","松江南京","中山","北門","西門","小南門","中正紀念堂","古亭","台電大樓"],"run":[138,102,84,92,106,116,86,83,76,87,85],"dwell":[0,27,27,33,35,35,28,34,27,38,33,0],"line":"G","headway":{"weekday_peak":5.0,"weekday_off":null,"holiday":null},"synthetic":false,"servedBy":["松山-新店","松山-台電大樓"],"effHeadway":{"weekday_peak":2.5,"weekday_off":7.0,"holiday":7.0}},{"id":"七張-小碧潭","stops":["七張","小碧潭"],"run":[203],"dwell":[0,0],"line":"G","headway":{"weekday_peak":16.0,"weekday_off":16.0,"holiday":16.0},"synthetic":false,"servedBy":["七張-小碧潭"],"effHeadway":{"weekday_peak":16.0,"weekday_off":16.0,"holiday":16.0}},{"id":"北投-新北投","stops":["北投","新北投"],"run":[157],"dwell":[0,0],"line":"R","headway":{"weekday_peak":7.5,"weekday_off":10.0,"holiday":11.0},"synthetic":false,"servedBy":["北投-新北投"],"effHeadway":{"weekday_peak":7.5,"weekday_off":10.0,"holiday":11.0}},{"id":"南港展覽館-頂埔","stops":["南港展覽館","南港","昆陽","後山埤","永春","市政府","國父紀念館","忠孝敦化","忠孝復興","忠孝新生","善導寺","台北車站","西門","龍山寺","江子翠","新埔","板橋","府中","亞東醫院","海山","土城","永寧","頂埔"],"run":[112,109,107,76,87,77,71,65,90,81,66,120,110,192,77,107,67,102,142,106,95,180],"dwell":[0,24,25,29,25,28,28,28,40,40,25,42,35,29,28,28,28,28,26,26,26,28,0],"line":"BL","headway":{"weekday_peak":6.0,"weekday_off":9.0,"holiday":9.0},"synthetic":false,"servedBy":["南港展覽館-頂埔"],"effHeadway":{"weekday_peak":6.0,"weekday_off":9.0,"holiday":9.0}},{"id":"南港展覽館-亞東醫院","stops":["南港展覽館","南港","昆陽","後山埤","永春","市政府","國父紀念館","忠孝敦化","忠孝復興","忠孝新生","善導寺","台北車站","西門","龍山寺","江子翠","新埔","板橋","府中","亞東醫院"],"run":[112,109,107,76,87,77,71,65,90,81,66,120,110,192,77,107,67,102],"dwell":[0,24,25,29,25,28,28,28,40,40,25,42,35,29,28,28,28,28,0],"line":"BL","headway":{"weekday_peak":6.0,"weekday_off":9.0,"holiday":9.0},"synthetic":false,"servedBy":["南港展覽館-頂埔","南港展覽館-亞東醫院"],"effHeadway":{"weekday_peak":3.0,"weekday_off":4.5,"holiday":4.5}},{"id":"動物園-南港展覽館","stops":["南港展覽館","南港軟體園區","東湖","葫洲","大湖公園","內湖","文德","港墘","西湖","劍南路","大直","松山機場","中山國中","南京復興","忠孝復興","大安","科技大樓","六張犁","麟光","辛亥","萬芳醫院","萬芳社區","木柵","動物園"],"run":[78,85,78,121,71,78,72,65,110,104,172,162,66,86,67,69,122,72,141,106,99,47,67],"dwell":[0,25,25,25,25,25,25,25,25,25,25,30,30,35,45,35,25,25,25,25,25,25,25,0],"line":"BR","headway":{"weekday_peak":3.0,"weekday_off":7.0,"holiday":7.0},"synthetic":false,"servedBy":["動物園-南港展覽館"],"effHeadway":{"weekday_peak":3.0,"weekday_off":7.0,"holiday":7.0}},{"id":"南勢角-蘆洲","stops":["蘆洲","三民高中","徐匯中學","三和國中","三重國小","大橋頭","民權西路","中山國小","行天宮","松江南京","忠孝新生","東門","古亭","頂溪","永安市場","景安","南勢角"],"run":[111,92,82,107,151,72,72,96,78,102,136,208,187,103,90,97],"dwell":[0,25,25,25,25,26,33,30,30,30,38,33,33,29,29,28,0],"line":"O","headway":{"weekday_peak":6.0,"weekday_off":9.5,"holiday":9.5},"synthetic":false,"servedBy":["南勢角-蘆洲"],"effHeadway":{"weekday_peak":6.0,"weekday_off":9.5,"holiday":9.5}},{"id":"南勢角-迴龍","stops":["迴龍","丹鳳","輔大","新莊","頭前庄","先嗇宮","三重","菜寮","台北橋","大橋頭","民權西路","中山國小","行天宮","松江南京","忠孝新生","東門","古亭","頂溪","永安市場","景安","南勢角"],"run":[168,113,137,94,108,142,84,97,127,72,72,96,78,102,136,208,187,103,90,97],"dwell":[0,25,25,25,25,25,25,25,25,26,33,30,30,30,38,33,33,29,29,28,0],"line":"O","headway":{"weekday_peak":6.0,"weekday_off":9.5,"holiday":9.5},"synthetic":false,"servedBy":["南勢角-迴龍"],"effHeadway":{"weekday_peak":6.0,"weekday_off":9.5,"holiday":9.5}},{"id":"新北產業園區-大坪林","stops":["新北產業園區","幸福","頭前庄","新埔民生","板橋","板新","中原","橋和","中和","景安","景平","秀朗橋","十四張","大坪林"],"run":[135,95,143,191,153,111,72,104,194,84,79,111,145],"dwell":[0,23,35,25,40,25,25,25,25,35,25,23,23,0],"line":"Y","headway":{"weekday_peak":4.8,"weekday_off":7.5,"holiday":7.5},"synthetic":false,"servedBy":["新北產業園區-大坪林"],"effHeadway":{"weekday_peak":4.8,"weekday_off":7.5,"holiday":7.5}},{"id":"大橋頭-南勢角(共用區段)","line":"O","stops":["大橋頭","民權西路","中山國小","行天宮","松江南京","忠孝新生","東門","古亭","頂溪","永安市場","景安","南勢角"],"run":[72,72,96,78,102,136,208,187,103,90,97],"dwell":[0,33,30,30,30,38,33,33,29,29,28,0],"headway":{"weekday_peak":null,"weekday_off":null,"holiday":null},"synthetic":true,"servedBy":["南勢角-蘆洲","南勢角-迴龍"],"effHeadway":{"weekday_peak":3.0,"weekday_off":4.75,"holiday":4.75}}],"transfers":[{"a":["板橋","BL"],"b":["板橋","Y"],"minutes":11,"onsite":false},{"a":["新埔","BL"],"b":["新埔民生","Y"],"minutes":9,"onsite":false},{"a":["西門","BL"],"b":["西門","G"],"minutes":2,"onsite":true},{"a":["台北車站","BL"],"b":["台北車站","R"],"minutes":4,"onsite":true},{"a":["忠孝新生","BL"],"b":["忠孝新生","O"],"minutes":2,"onsite":true},{"a":["忠孝復興","BL"],"b":["忠孝復興","BR"],"minutes":5,"onsite":true},{"a":["南港展覽館","BL"],"b":["南港展覽館","BR"],"minutes":5,"onsite":true},{"a":["大安","BR"],"b":["大安","R"],"minutes":5,"onsite":true},{"a":["南京復興","BR"],"b":["南京復興","G"],"minutes":5,"onsite":true},{"a":["七張","G"],"b":["七張","G"],"minutes":3,"onsite":true},{"a":["大坪林","G"],"b":["大坪林","Y"],"minutes":3,"onsite":true},{"a":["古亭","G"],"b":["古亭","O"],"minutes":2,"onsite":true},{"a":["中正紀念堂","G"],"b":["中正紀念堂","R"],"minutes":2,"onsite":true},{"a":["中山","G"],"b":["中山","R"],"minutes":3,"onsite":true},{"a":["松江南京","G"],"b":["松江南京","O"],"minutes":2,"onsite":true},{"a":["景安","O"],"b":["景安","Y"],"minutes":6,"onsite":true},{"a":["東門","O"],"b":["東門","R"],"minutes":2,"onsite":true},{"a":["民權西路","O"],"b":["民權西路","R"],"minutes":3,"onsite":true},{"a":["大橋頭","O"],"b":["大橋頭","O"],"minutes":1,"onsite":true},{"a":["頭前庄","O"],"b":["頭前庄","Y"],"minutes":6,"onsite":true},{"a":["北投","R"],"b":["北投","R"],"minutes":3,"onsite":true}]};</script>
+<script>/*
+ * 捷運採點路線引擎(瀏覽器與 Node 共用,無相依套件)
+ *
+ * 模型
+ *   - 每個「採點」都要出站,所以兩個採點之間的每一段行程彼此獨立:
+ *     從 A 站站外 → B 站站外的最佳路徑可以單獨算,再把順序當成旅行推銷員問題(TSP)求解。
+ *   - 圖的節點:站外(每站一個)+ 月台(每個 站×營運路線 一個)。
+ *     進站 = 等車(有效班距的一半);乘車 = 行駛秒數 + 途經站停靠秒數;
+ *     換車 = 轉乘步行 + 新路線等車,並記一次換車。
+ *   - 兩個分數:總時間、換車次數。以「一次換車折合幾分鐘」λ 做加權,
+ *     掃過多個 λ 求解,再取柏拉圖前緣(沒有被另一條路線在兩個分數上同時勝過)給使用者挑。
+ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.MetroEngine = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  // ---------- 亂數(可重現) ----------
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ---------- 最小堆 ----------
+  class Heap {
+    constructor() { this.k = []; this.v = []; }
+    get size() { return this.k.length; }
+    push(key, val) {
+      const k = this.k, v = this.v;
+      let i = k.length;
+      k.push(key); v.push(val);
+      while (i > 0) {
+        const p = (i - 1) >> 1;
+        if (k[p] <= key) break;
+        k[i] = k[p]; v[i] = v[p]; i = p;
+      }
+      k[i] = key; v[i] = val;
+    }
+    pop() {
+      const k = this.k, v = this.v;
+      const topV = v[0], topK = k[0];
+      const lastK = k.pop(), lastV = v.pop();
+      if (k.length) {
+        let i = 0;
+        const n = k.length;
+        for (;;) {
+          let c = 2 * i + 1;
+          if (c >= n) break;
+          if (c + 1 < n && k[c + 1] < k[c]) c++;
+          if (k[c] >= lastK) break;
+          k[i] = k[c]; v[i] = v[c]; i = c;
+        }
+        k[i] = lastK; v[i] = lastV;
+      }
+      return [topK, topV];
+    }
+  }
+
+  // ---------- 建圖 ----------
+  /**
+   * @param network data/network.json
+   * @param profile "weekday_peak" | "weekday_off" | "holiday"
+   */
+  function buildGraph(network, profile) {
+    const stationIndex = new Map();
+    network.stations.forEach((s, i) => stationIndex.set(s.name, i));
+    const nS = network.stations.length;
+
+    const nodes = []; // {kind:'street'|'platform', station, service?, pos?}
+    for (let i = 0; i < nS; i++) nodes.push({ kind: "street", station: i });
+
+    const services = [];
+    network.services.forEach((svc) => {
+      const h = svc.effHeadway[profile];
+      if (!h) return; // 此時段不營運
+      const idx = services.length;
+      const nodeIds = svc.stops.map((name, pos) => {
+        nodes.push({ kind: "platform", station: stationIndex.get(name), service: idx, pos });
+        return nodes.length - 1;
+      });
+      services.push({ ...svc, idx, nodeIds, wait: (h * 60) / 2 });
+    });
+
+    // 邊:{to, sec, xfer, kind, meta}
+    const adj = nodes.map(() => []);
+    const add = (a, b, e) => adj[a].push({ to: b, ...e });
+
+    // 轉乘步行時間表:key = 站名|線 → [{station, line, minutes}]
+    const xferMap = new Map();
+    for (const t of network.transfers) {
+      const [an, al] = t.a, [bn, bl] = t.b;
+      const push = (k, v) => { if (!xferMap.has(k)) xferMap.set(k, []); xferMap.get(k).push(v); };
+      push(an + "|" + al, { station: bn, line: bl, minutes: t.minutes });
+      push(bn + "|" + bl, { station: an, line: al, minutes: t.minutes });
+    }
+
+    // 各站各線上的月台節點
+    const platformsAt = new Map(); // station idx → [{node, service}]
+    for (const svc of services) {
+      svc.nodeIds.forEach((nid, pos) => {
+        const st = stationIndex.get(svc.stops[pos]);
+        if (!platformsAt.has(st)) platformsAt.set(st, []);
+        platformsAt.get(st).push({ node: nid, service: svc, pos });
+      });
+    }
+
+    for (const svc of services) {
+      const ids = svc.nodeIds;
+      for (let i = 0; i < ids.length - 1; i++) {
+        // 雙向;途經站停靠秒數算在離開該站那一段
+        add(ids[i], ids[i + 1], { sec: svc.run[i] + (i > 0 ? svc.dwell[i] : 0), xfer: 0, kind: "ride" });
+        const back = i + 1;
+        add(ids[back], ids[i], { sec: svc.run[i] + (back < ids.length - 1 ? svc.dwell[back] : 0), xfer: 0, kind: "ride" });
+      }
+    }
+
+    // 站外轉乘(例:板橋的板南線與環狀線是不同站體):集章在活動路線那一側,
+    // 從站外搭非活動路線、或搭非活動路線來集章,都要多走這段
+    const excluded = new Set(network.activityExcludeLines || ["Y"]);
+    function offsiteWalkSec(stName, line) {
+      if (!excluded.has(line)) return 0;
+      const t = network.transfers.find((x) => !x.onsite && x.a[0] === stName && x.b[0] === stName && (x.a[1] === line || x.b[1] === line));
+      return t ? t.minutes * 60 : 0;
+    }
+
+    for (const [st, plats] of platformsAt) {
+      const stName = network.stations[st].name;
+      for (const p of plats) {
+        // 進站(站外 → 月台):等車;出站(月台 → 站外)
+        const off = offsiteWalkSec(stName, p.service.line);
+        add(st, p.node, { sec: off + p.service.wait, xfer: 0, kind: "board", walk: off });
+        add(p.node, st, { sec: off, xfer: 0, kind: "alight", walk: off });
+        // 同站換車
+        for (const q of plats) {
+          if (q.node === p.node) continue;
+          if (p.service.line === q.service.line) {
+            const tdx = (xferMap.get(stName + "|" + p.service.line) || []).find((x) => x.station === stName && x.line === q.service.line);
+            const min = tdx ? tdx.minutes : network.sameLineTransferMinutes;
+            add(p.node, q.node, { sec: min * 60 + q.service.wait, xfer: 1, kind: "transfer", walk: min * 60 });
+          } else {
+            const tdx = (xferMap.get(stName + "|" + p.service.line) || []).find((x) => x.line === q.service.line && x.station === stName);
+            if (!tdx) continue;
+            add(p.node, q.node, { sec: tdx.minutes * 60 + q.service.wait, xfer: 1, kind: "transfer", walk: tdx.minutes * 60 });
+          }
+        }
+      }
+    }
+    // 不同站名的站外轉乘(板南線新埔 ↔ 環狀線新埔民生)
+    for (const t of network.transfers) {
+      if (t.a[0] === t.b[0]) continue;
+      const sa = stationIndex.get(t.a[0]), sb = stationIndex.get(t.b[0]);
+      const pa = (platformsAt.get(sa) || []).filter((p) => p.service.line === t.a[1]);
+      const pb = (platformsAt.get(sb) || []).filter((p) => p.service.line === t.b[1]);
+      for (const p of pa) for (const q of pb) {
+        add(p.node, q.node, { sec: t.minutes * 60 + q.service.wait, xfer: 1, kind: "transfer", walk: t.minutes * 60 });
+        add(q.node, p.node, { sec: t.minutes * 60 + p.service.wait, xfer: 1, kind: "transfer", walk: t.minutes * 60 });
+      }
+      // 只是要到隔壁那站集章/出發:直接走過去,不必再搭車
+      const w = t.minutes * 60;
+      for (const p of pa) {
+        add(p.node, sb, { sec: w, xfer: 0, kind: "alight", walk: w, walkTo: t.b[0] });
+        add(sb, p.node, { sec: w + p.service.wait, xfer: 0, kind: "board", walk: w, walkFrom: t.b[0] });
+      }
+      for (const q of pb) {
+        add(q.node, sa, { sec: w, xfer: 0, kind: "alight", walk: w, walkTo: t.a[0] });
+        add(sa, q.node, { sec: w + q.service.wait, xfer: 0, kind: "board", walk: w, walkFrom: t.a[0] });
+      }
+    }
+
+    return { network, profile, nodes, adj, services, stationIndex, nS };
+  }
+
+  // ---------- 單源最短路徑(加權:秒 + λ×換車) ----------
+  function dijkstra(graph, srcStation, penaltySec) {
+    const n = graph.nodes.length;
+    const cost = new Float64Array(n).fill(Infinity);
+    const time = new Float64Array(n);
+    const xfer = new Int32Array(n);
+    const prev = new Int32Array(n).fill(-1);
+    const prevEdge = new Array(n);
+    const heap = new Heap();
+    cost[srcStation] = 0;
+    heap.push(0, srcStation);
+    while (heap.size) {
+      const [c, u] = heap.pop();
+      if (c > cost[u]) continue;
+      // 站外節點只能當起點或終點,不能「出站再進站」繞路
+      if (graph.nodes[u].kind === "street" && u !== srcStation) continue;
+      for (const e of graph.adj[u]) {
+        const nc = c + e.sec + e.xfer * penaltySec;
+        // 同分時偏好時間較短
+        if (nc < cost[e.to] - 1e-9 || (Math.abs(nc - cost[e.to]) < 1e-9 && time[u] + e.sec < time[e.to])) {
+          cost[e.to] = nc;
+          time[e.to] = time[u] + e.sec;
+          xfer[e.to] = xfer[u] + e.xfer;
+          prev[e.to] = u;
+          prevEdge[e.to] = e;
+          heap.push(nc, e.to);
+        }
+      }
+    }
+    return { cost, time, xfer, prev, prevEdge };
+  }
+
+  /** 把 dijkstra 結果還原成人看得懂的乘車步驟 */
+  function extractLeg(graph, sp, srcStation, dstStation) {
+    const path = [];
+    let u = dstStation;
+    while (u !== srcStation && u !== -1) {
+      path.push({ node: u, edge: sp.prevEdge[u] });
+      u = sp.prev[u];
+    }
+    path.reverse();
+    const steps = [];
+    let cur = null;
+    for (const { node, edge } of path) {
+      const nd = graph.nodes[node];
+      if (edge.kind === "board" || edge.kind === "transfer") {
+        if (cur) steps.push(cur);
+        const svc = graph.services[nd.service];
+        cur = {
+          service: svc,
+          line: svc.line,
+          fromStation: graph.network.stations[nd.station].name,
+          fromPos: nd.pos,
+          toPos: nd.pos,
+          waitSec: svc.wait,
+          walkSec: edge.walk || 0,
+          rideSec: 0,
+          isTransfer: edge.kind === "transfer",
+        };
+      } else if (edge.kind === "ride") {
+        cur.toPos = nd.pos;
+        cur.rideSec += edge.sec;
+      } else if (edge.kind === "alight" && cur) {
+        cur.exitWalkSec = edge.walk || 0;
+        cur.exitWalkTo = edge.walkTo || null;
+      }
+      if (edge.kind === "board" && cur) cur.walkFrom = edge.walkFrom || null;
+    }
+    if (cur) steps.push(cur);
+    for (const s of steps) {
+      s.toStation = s.service.stops[s.toPos];
+      s.stopsCount = Math.abs(s.toPos - s.fromPos);
+      s.direction = directionLabel(graph, s.service, s.fromPos, s.toPos);
+    }
+    return {
+      timeSec: sp.time[dstStation],
+      transfers: sp.xfer[dstStation],
+      steps: steps.filter((s) => s.stopsCount > 0),
+    };
+  }
+
+  /** 「往 X」:所有能搭的列車在該方向的終點站 */
+  function directionLabel(graph, svc, fromPos, toPos) {
+    const forward = toPos > fromPos;
+    const a = svc.stops[fromPos], b = svc.stops[toPos];
+    const terms = new Set();
+    for (const id of svc.servedBy) {
+      const o = graph.network.services.find((x) => x.id === id);
+      if (!o || !o.headway[graph.profile]) continue;
+      const ia = o.stops.indexOf(a), ib = o.stops.indexOf(b);
+      if (ia < 0 || ib < 0) continue;
+      terms.add(ib > ia ? o.stops[o.stops.length - 1] : o.stops[0]);
+    }
+    if (!terms.size) terms.add(forward ? svc.stops[svc.stops.length - 1] : svc.stops[0]);
+    return [...terms];
+  }
+
+  // ---------- 成本矩陣 ----------
+  function buildMatrices(graph, pointStations, penaltiesSec) {
+    // points: 站 index 陣列;回傳 per λ:{cost[i][j], time[i][j], xfer[i][j], sp[i]}
+    const m = pointStations.length;
+    return penaltiesSec.map((pen) => {
+      const cost = [], time = [], xfer = [], sps = [];
+      for (let i = 0; i < m; i++) {
+        const sp = dijkstra(graph, pointStations[i], pen);
+        sps.push(sp);
+        cost.push(pointStations.map((d) => sp.cost[d]));
+        time.push(pointStations.map((d) => sp.time[d]));
+        xfer.push(pointStations.map((d) => sp.xfer[d]));
+      }
+      return { penaltySec: pen, cost, time, xfer, sps };
+    });
+  }
+
+  // ---------- TSP(起點固定;終點:自由 / 指定 / 回起點) ----------
+  // 節點 0 = 起點;1..k = 採點;若 endIdx 存在則為最後一個固定節點
+  function tourCost(order, C, closeTo) {
+    let c = 0, prev = 0;
+    for (const x of order) { c += C[prev][x]; prev = x; }
+    if (closeTo != null) c += C[prev][closeTo];
+    return c;
+  }
+
+  function heldKarp(k, C, closeTo) {
+    // 狀態:mask of 採點(1..k),last
+    const full = 1 << k;
+    const dp = new Float64Array(full * k).fill(Infinity);
+    const par = new Int8Array(full * k).fill(-1);
+    for (let j = 0; j < k; j++) dp[(1 << j) * k + j] = C[0][j + 1];
+    for (let mask = 1; mask < full; mask++) {
+      for (let j = 0; j < k; j++) {
+        const v = dp[mask * k + j];
+        if (!(mask & (1 << j)) || v === Infinity) continue;
+        for (let n = 0; n < k; n++) {
+          if (mask & (1 << n)) continue;
+          const nm = mask | (1 << n);
+          const nv = v + C[j + 1][n + 1];
+          if (nv < dp[nm * k + n]) { dp[nm * k + n] = nv; par[nm * k + n] = j; }
+        }
+      }
+    }
+    let best = Infinity, last = -1;
+    for (let j = 0; j < k; j++) {
+      const v = dp[(full - 1) * k + j] + (closeTo != null ? C[j + 1][closeTo] : 0);
+      if (v < best) { best = v; last = j; }
+    }
+    const order = [];
+    let mask = full - 1;
+    while (last >= 0) {
+      order.push(last + 1);
+      const p = par[mask * k + last];
+      mask &= ~(1 << last);
+      last = p;
+    }
+    return order.reverse();
+  }
+
+  function localSearch(order, C, closeTo) {
+    // Or-opt(搬移 1–3 站的片段,可翻轉)+ 2-opt(翻轉區段,非對稱矩陣用完整重算)
+    const n = order.length;
+    let improved = true;
+    let cur = tourCost(order, C, closeTo);
+    const at = (i) => (i < 0 ? 0 : i >= n ? closeTo : order[i]);
+    const edge = (a, b) => (a == null || b == null ? 0 : C[a][b]);
+    while (improved) {
+      improved = false;
+      // Or-opt
+      for (let len = 1; len <= 3 && !improved; len++) {
+        for (let i = 0; i + len <= n && !improved; i++) {
+          const segStart = order[i], segEnd = order[i + len - 1];
+          const before = at(i - 1), after = at(i + len);
+          let segCost = 0;
+          for (let t = i; t < i + len - 1; t++) segCost += C[order[t]][order[t + 1]];
+          let segRev = 0;
+          for (let t = i + len - 1; t > i; t--) segRev += C[order[t]][order[t - 1]];
+          const removeGain = edge(before, segStart) + edge(segEnd, after) + segCost - edge(before, after);
+          const rest = order.slice(0, i).concat(order.slice(i + len));
+          const m = rest.length;
+          for (let j = 0; j <= m; j++) {
+            if (j === i) continue;
+            const p = j === 0 ? 0 : rest[j - 1];
+            const q = j < m ? rest[j] : closeTo;
+            const insF = edge(p, segStart) + segCost + edge(segEnd, q) - edge(p, q);
+            const insR = edge(p, segEnd) + segRev + edge(segStart, q) - edge(p, q);
+            const ins = Math.min(insF, insR);
+            if (ins < removeGain - 1e-6) {
+              const seg = order.slice(i, i + len);
+              if (insR < insF) seg.reverse();
+              const next = rest.slice(0, j).concat(seg, rest.slice(j));
+              const nc = tourCost(next, C, closeTo);
+              if (nc < cur - 1e-6) {
+                order.splice(0, n, ...next);
+                cur = nc;
+                improved = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (improved) continue;
+      // 2-opt
+      for (let i = 0; i < n - 1 && !improved; i++) {
+        for (let j = i + 1; j < n && !improved; j++) {
+          const a = at(i - 1), b = order[i], c = order[j], d = at(j + 1);
+          let fwd = 0, rev = 0;
+          for (let t = i; t < j; t++) { fwd += C[order[t]][order[t + 1]]; rev += C[order[t + 1]][order[t]]; }
+          const delta = edge(a, c) + rev + edge(b, d) - (edge(a, b) + fwd + edge(c, d));
+          if (delta < -1e-6) {
+            const seg = order.slice(i, j + 1).reverse();
+            order.splice(i, seg.length, ...seg);
+            cur += delta;
+            improved = true;
+          }
+        }
+      }
+    }
+    return cur;
+  }
+
+  function doubleBridge(order, rnd) {
+    const n = order.length;
+    if (n < 8) {
+      const o = order.slice();
+      const i = Math.floor(rnd() * n), j = Math.floor(rnd() * n);
+      [o[i], o[j]] = [o[j], o[i]];
+      return o;
+    }
+    const cuts = new Set();
+    while (cuts.size < 3) cuts.add(1 + Math.floor(rnd() * (n - 1)));
+    const [p, q, r] = [...cuts].sort((x, y) => x - y);
+    return order.slice(0, p).concat(order.slice(q, r), order.slice(p, q), order.slice(r));
+  }
+
+  function nearestNeighbor(k, C, rnd, noise) {
+    const left = new Set();
+    for (let i = 1; i <= k; i++) left.add(i);
+    const order = [];
+    let cur = 0;
+    while (left.size) {
+      let best = -1, bv = Infinity;
+      for (const x of left) {
+        const v = C[cur][x] * (1 + noise * rnd());
+        if (v < bv) { bv = v; best = x; }
+      }
+      order.push(best);
+      left.delete(best);
+      cur = best;
+    }
+    return order;
+  }
+
+  /**
+   * 迭代式區域搜尋;timeBudgetMs 內反覆擾動 + 區域最佳化。
+   * 以 generator 形式讓瀏覽器可以分段執行、不卡畫面。
+   */
+  function* solveTSP(k, C, closeTo, opts) {
+    const budget = opts.timeBudgetMs ?? 400;
+    const rnd = mulberry32(opts.seed ?? 20261031);
+    if (k === 0) return { order: [], cost: closeTo != null ? C[0][closeTo] : 0, exact: true };
+    if (k <= 12) {
+      const order = heldKarp(k, C, closeTo);
+      return { order, cost: tourCost(order, C, closeTo), exact: true };
+    }
+    const t0 = Date.now();
+    let best = nearestNeighbor(k, C, rnd, 0);
+    let bestCost = localSearch(best, C, closeTo);
+    let cur = best.slice(), curCost = bestCost;
+    let iter = 0, lastYield = Date.now();
+    // 迭代上限:時鐘被凍結的環境(無頭瀏覽器虛擬時間、背景分頁節流)也保證會結束
+    const maxIter = opts.maxIterations ?? Math.max(200, Math.round(budget * 4));
+    while (Date.now() - t0 < budget && iter < maxIter) {
+      iter++;
+      let cand;
+      if (iter % 25 === 0) cand = nearestNeighbor(k, C, rnd, 0.35);
+      else cand = doubleBridge(cur, rnd);
+      const c = localSearch(cand, C, closeTo);
+      if (c < curCost - 1e-6 || rnd() < 0.02) { cur = cand; curCost = c; }
+      if (c < bestCost - 1e-6) { best = cand.slice(); bestCost = c; }
+      if (Date.now() - lastYield > 30 || iter % 20 === 0) {
+        lastYield = Date.now();
+        yield Math.min(1, Math.max((Date.now() - t0) / budget, iter / maxIter));
+      }
+    }
+    return { order: best, cost: bestCost, exact: false, iterations: iter };
+  }
+
+  // ---------- 對外:規劃 ----------
+  const DEFAULT_PENALTIES_MIN = [0, 3, 6, 12, 25, 60];
+
+  /**
+   * @param opts {
+   *   start: 站名, targets: [站名], endMode: 'free'|'station'|'return', end?: 站名,
+   *   stayMin: 每個採點停留分鐘, profile, penaltiesMin?: [..], timeBudgetMs?: 每個 λ 的搜尋時間
+   * }
+   * 回傳 generator:yield 進度(0..1),return {options:[...], graph}
+   */
+  function* plan(network, opts) {
+    const graph = opts.graph && opts.graph.profile === opts.profile ? opts.graph : buildGraph(network, opts.profile);
+    const S = graph.stationIndex;
+    const start = S.get(opts.start);
+    if (start == null) throw new Error("找不到起點:" + opts.start);
+    const targets = [...new Set(opts.targets)].filter((t) => t !== opts.start || opts.endMode === "return").map((t) => {
+      const i = S.get(t);
+      if (i == null) throw new Error("找不到車站:" + t);
+      return i;
+    });
+    const startIsTarget = opts.targets.includes(opts.start);
+    const endStation = opts.endMode === "station" && opts.end ? S.get(opts.end) : null;
+    // 起點本身若是未集站:出發前先集,停留時間照算,不需乘車;指定終點若是未集站,留到最後一站集
+    const tgt = targets.filter((i) => i !== start && i !== endStation);
+    const points = [start, ...tgt];
+    let closeTo = null;
+    if (opts.endMode === "return") closeTo = 0;
+    else if (opts.endMode === "station" && opts.end) {
+      const e = S.get(opts.end);
+      if (e == null) throw new Error("找不到終點:" + opts.end);
+      const existing = points.indexOf(e);
+      if (existing > 0) {
+        // 終點本身是採點:從採點清單移出,改為固定終點
+        points.splice(existing, 1);
+      }
+      points.push(e);
+      closeTo = points.length - 1;
+    }
+    const penalties = (opts.penaltiesMin || DEFAULT_PENALTIES_MIN).map((m) => m * 60);
+    const mats = buildMatrices(graph, points, penalties);
+    const k = closeTo != null && closeTo > 0 ? points.length - 2 : points.length - 1;
+    const endIsTarget = opts.endMode === "station" && opts.end && opts.targets.includes(opts.end) && opts.end !== opts.start;
+
+    const raw = [];
+    for (let li = 0; li < mats.length; li++) {
+      const M = mats[li];
+      // 固定終點放在最後一格,TSP 只排 1..k
+      const it = solveTSP(k, M.cost, closeTo, { timeBudgetMs: opts.timeBudgetMs, seed: 1000 + li });
+      let r;
+      for (;;) {
+        const step = it.next();
+        if (step.done) { r = step.value; break; }
+        yield (li + step.value) / mats.length;
+      }
+      yield (li + 1) / mats.length;
+      const seq = [0, ...r.order];
+      if (closeTo != null) seq.push(closeTo);
+      let time = 0, xfer = 0;
+      for (let i = 0; i + 1 < seq.length; i++) { time += M.time[seq[i]][seq[i + 1]]; xfer += M.xfer[seq[i]][seq[i + 1]]; }
+      raw.push({ penaltyMin: M.penaltySec / 60, seq, rideSec: time, transfers: xfer, exact: r.exact, M });
+    }
+
+    // 柏拉圖前緣
+    const stayCount = tgt.length + (startIsTarget ? 1 : 0) + (endIsTarget ? 1 : 0);
+    const staySec = stayCount * opts.stayMin * 60;
+    const uniq = [];
+    for (const r of raw) {
+      if (uniq.some((u) => u.transfers === r.transfers && Math.abs(u.rideSec - r.rideSec) < 1)) continue;
+      uniq.push(r);
+    }
+    const front = uniq.filter((a) => !uniq.some((b) => b !== a && b.rideSec <= a.rideSec + 1e-6 && b.transfers <= a.transfers && (b.rideSec < a.rideSec - 1 || b.transfers < a.transfers)));
+    front.sort((a, b) => a.rideSec - b.rideSec);
+
+    const options = front.map((r) => {
+      const legs = [];
+      for (let i = 0; i + 1 < r.seq.length; i++) {
+        const a = r.seq[i], b = r.seq[i + 1];
+        const leg = extractLeg(graph, r.M.sps[a], points[a], points[b]);
+        const toName = network.stations[points[b]].name;
+        const isEnd = closeTo != null && i + 1 === r.seq.length - 1;
+        leg.from = network.stations[points[a]].name;
+        leg.to = toName;
+        leg.stamp = !isEnd || Boolean(endIsTarget);
+        legs.push(leg);
+      }
+      return {
+        penaltyMin: r.penaltyMin,
+        rideSec: r.rideSec,
+        transfers: r.transfers,
+        stayCount,
+        totalSec: r.rideSec + staySec,
+        startIsTarget,
+        exact: r.exact,
+        legs,
+      };
+    });
+    return { options, graph, pointCount: points.length };
+  }
+
+  /** 把一條路線排進時刻表(可跨日) */
+  function schedule(option, opts) {
+    const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; };
+    const dayStart = toMin(opts.startTime || "09:00");
+    const dayEnd = toMin(opts.dayEnd || "23:30");
+    const stay = opts.stayMin;
+    const days = [];
+    let day = { index: 1, items: [] };
+    let t = dayStart;
+    if (option.startIsTarget) {
+      day.items.push({ type: "stamp", station: option.legs[0]?.from ?? opts.start, at: t, leave: t + stay });
+      t += stay;
+    }
+    option.legs.forEach((leg, i) => {
+      const legMin = leg.timeSec / 60;
+      const needEnd = t + legMin + (leg.stamp ? stay : 0);
+      if (needEnd > dayEnd && day.items.length) {
+        days.push(day);
+        day = { index: days.length + 1, items: [], resumeFrom: leg.from };
+        t = dayStart;
+      }
+      day.items.push({ type: "leg", leg, depart: t, arrive: t + legMin, index: i });
+      t += legMin;
+      if (leg.stamp) {
+        day.items.push({ type: "stamp", station: leg.to, at: t, leave: t + stay });
+        t += stay;
+      } else {
+        day.items.push({ type: "end", station: leg.to, at: t });
+      }
+    });
+    days.push(day);
+    for (const d of days) {
+      const first = d.items[0], last = d.items[d.items.length - 1];
+      d.begin = first ? (first.type === "leg" ? first.depart : first.at) : dayStart;
+      d.finish = last ? (last.leave ?? last.arrive ?? last.at) : dayStart;
+    }
+    return days;
+  }
+
+  // ---------- 多天規劃:每天各有起點與終點 ----------
+  // 解 = D 條日路線(採點序列)。一天的成本 = 起點 → 採點… → 終點(不限就停在最後一站),
+  // 超過每天可用時間的秒數乘上 OVERTIME_WEIGHT 當罰分。搜尋:最便宜插入起手,
+  // 再反覆「拆掉一群相近的站、重新插回最便宜的位置」+ 區域搜尋(搬移 1–3 站片段、日內翻轉)。
+  const OVERTIME_WEIGHT = 20;
+  // 最後一天每用一秒,成本多算這麼多倍:只看車程的話,多一趟往返的那天(例如今天只剩一兩小時)
+  // 永遠比較貴,引擎會把整天留空、全部塞到之後。改成也要「最後一天早點收工」,前面天的空檔就會被用上;
+  // 前面天已經排滿時,這一項不影響順序。可用 opts.lastDayWeight 覆寫
+  const LAST_DAY_WEIGHT = 2;
+  const FINISH_SLACK_SEC = 15 * 60;
+  const hhmmToMin = (hhmm) => { const [h, m] = String(hhmm).split(":").map(Number); return h * 60 + m; };
+  const DEFAULT_START = "09:00", DEFAULT_END = "23:00";
+  const validTime = (v) => /^([01]\d|2[0-3]):[0-5]\d$/.test(String(v));
+  const AFTER_MIDNIGHT_MAX = 3 * 60; // 收工早於出發且在 03:00 以前 = 隔天凌晨(末班車約午夜)
+
+  /**
+   * 一天的出發/收工時間(分鐘,收工可以大於 1440 = 隔天凌晨)。不合法回傳 error。
+   * 瀏覽器與引擎共用這一份判斷。
+   */
+  function dayWindow(startTime, dayEnd) {
+    if (!validTime(startTime) || !validTime(dayEnd)) return { error: "時間格式不對" };
+    const start = hhmmToMin(startTime);
+    let end = hhmmToMin(dayEnd);
+    if (end <= start && end <= AFTER_MIDNIGHT_MAX) end += 24 * 60;
+    if (end <= start) return { error: "收工時間要晚於出發時間(過午夜最晚到 03:00)" };
+    return { start, end };
+  }
+
+  function makeDaySolver(C, T, S, E, W, stay, targets, lastW = LAST_DAY_WEIGHT) {
+    const D = S.length;
+    const edge = (M, a, b) => (b < 0 ? 0 : M[a][b]);
+    // 一天除了車程以外的成本:超時罰分,最後一天再加上它用掉的時間
+    const over = (t, d) => OVERTIME_WEIGHT * Math.max(0, t - W[d]) + (d === D - 1 ? lastW * t : 0);
+    // 沒排站的那天 = 不出門:成本與時間都是 0(不算起點→終點那一趟)。
+    // 下面各處的增量公式在「空 ↔ 非空」時,都要把 S→E 那一段補回來
+    const idle = (M, d) => edge(M, S[d], E[d]);
+    function evalRoute(r, d) {
+      if (!r.length) return { c: 0, t: 0 };
+      let c = 0, t = 0, prev = S[d];
+      for (const x of r) { c += C[prev][x]; t += T[prev][x]; prev = x; }
+      c += edge(C, prev, E[d]);
+      t += edge(T, prev, E[d]) + stay * r.length;
+      return { c, t };
+    }
+    function state(routes) {
+      const cs = [], ts = [];
+      routes.forEach((r, d) => { const v = evalRoute(r, d); cs.push(v.c); ts.push(v.t); });
+      return { routes, cs, ts };
+    }
+    const objOf = (st) => st.cs.reduce((a, c, d) => a + c + over(st.ts[d], d), 0);
+    const overOf = (st) => st.ts.reduce((a, t, d) => a + Math.max(0, t - W[d]), 0);
+
+    // 把 x 插到最便宜的位置(含超時罰分)
+    function insertBest(st, x) {
+      let best = null;
+      for (let d = 0; d < D; d++) {
+        const r = st.routes[d];
+        const base = st.cs[d] + over(st.ts[d], d);
+        for (let j = 0; j <= r.length; j++) {
+          const p = j ? r[j - 1] : S[d], n = j < r.length ? r[j] : E[d];
+          const dc = C[p][x] + edge(C, x, n) - edge(C, p, n) + (r.length ? 0 : idle(C, d));
+          const dt = T[p][x] + edge(T, x, n) - edge(T, p, n) + stay + (r.length ? 0 : idle(T, d));
+          const delta = st.cs[d] + dc + over(st.ts[d] + dt, d) - base;
+          if (!best || delta < best.delta) best = { d, j, dc, dt, delta };
+        }
+      }
+      st.routes[best.d].splice(best.j, 0, x);
+      st.cs[best.d] += best.dc;
+      st.ts[best.d] += best.dt;
+    }
+
+    // 區域搜尋:片段搬移(跨天或同天,可翻轉)+ 日內 2-opt,改善就接受,直到沒有改善
+    function improve(st) {
+      let improved = true, guard = 0;
+      while (improved && guard++ < 200) {
+        improved = false;
+        for (let a = 0; a < D; a++) {
+          for (let len = 1; len <= 3; len++) {
+            for (let i = 0; i + len <= st.routes[a].length; i++) {
+              const ra = st.routes[a];
+              const seg = ra.slice(i, i + len);
+              const p = i ? ra[i - 1] : S[a], n = i + len < ra.length ? ra[i + len] : E[a];
+              let inC = 0, inT = 0, revC = 0, revT = 0;
+              for (let k = 0; k + 1 < len; k++) {
+                inC += C[seg[k]][seg[k + 1]]; inT += T[seg[k]][seg[k + 1]];
+                revC += C[seg[k + 1]][seg[k]]; revT += T[seg[k + 1]][seg[k]];
+              }
+              const f = seg[0], l = seg[len - 1];
+              const all = len === ra.length; // 整天搬空
+              const remC = C[p][f] + inC + edge(C, l, n) - edge(C, p, n) + (all ? idle(C, a) : 0);
+              const remT = T[p][f] + inT + edge(T, l, n) - edge(T, p, n) + stay * len + (all ? idle(T, a) : 0);
+              const oldA = st.cs[a] + over(st.ts[a], a);
+              let best = null;
+              for (let b = 0; b < D; b++) {
+                if (b === a) {
+                  const rest = ra.slice(0, i).concat(ra.slice(i + len));
+                  for (let j = 0; j <= rest.length; j++) {
+                    if (j === i) continue;
+                    for (const rev of [false, true]) {
+                      if (rev && len === 1) continue;
+                      const cand = rest.slice(0, j).concat(rev ? [...seg].reverse() : seg, rest.slice(j));
+                      const v = evalRoute(cand, a);
+                      const delta = v.c + over(v.t, a) - oldA;
+                      if (delta < -1e-6 && (!best || delta < best.delta)) best = { delta, same: cand, v };
+                    }
+                  }
+                } else {
+                  const rb = st.routes[b];
+                  const oldB = st.cs[b] + over(st.ts[b], b);
+                  const newA = st.cs[a] - remC + over(st.ts[a] - remT, a);
+                  for (let j = 0; j <= rb.length; j++) {
+                    const q = j ? rb[j - 1] : S[b], m = j < rb.length ? rb[j] : E[b];
+                    for (const rev of [false, true]) {
+                      if (rev && len === 1) continue;
+                      const h = rev ? l : f, e = rev ? f : l;
+                      const dc = C[q][h] + (rev ? revC : inC) + edge(C, e, m) - edge(C, q, m) + (rb.length ? 0 : idle(C, b));
+                      const dt = T[q][h] + (rev ? revT : inT) + edge(T, e, m) - edge(T, q, m) + stay * len + (rb.length ? 0 : idle(T, b));
+                      const delta = newA + st.cs[b] + dc + over(st.ts[b] + dt, b) - oldA - oldB;
+                      if (delta < -1e-6 && (!best || delta < best.delta)) best = { delta, b, j, rev, dc, dt };
+                    }
+                  }
+                }
+              }
+              if (!best) continue;
+              if (best.same) {
+                st.routes[a] = best.same; st.cs[a] = best.v.c; st.ts[a] = best.v.t;
+              } else {
+                ra.splice(i, len);
+                st.cs[a] -= remC; st.ts[a] -= remT;
+                st.routes[best.b].splice(best.j, 0, ...(best.rev ? [...seg].reverse() : seg));
+                st.cs[best.b] += best.dc; st.ts[best.b] += best.dt;
+              }
+              improved = true;
+            }
+          }
+        }
+        // 日內 2-opt(非對稱:翻轉段用反向前綴和)
+        for (let d = 0; d < D; d++) {
+          const r = st.routes[d];
+          const n = r.length;
+          if (n < 3) continue;
+          const fC = [0], rC = [0], fT = [0], rT = [0];
+          for (let k = 0; k + 1 < n; k++) {
+            fC.push(fC[k] + C[r[k]][r[k + 1]]); rC.push(rC[k] + C[r[k + 1]][r[k]]);
+            fT.push(fT[k] + T[r[k]][r[k + 1]]); rT.push(rT[k] + T[r[k + 1]][r[k]]);
+          }
+          const old = st.cs[d] + over(st.ts[d], d);
+          let best = null;
+          for (let i = 0; i < n - 1; i++) {
+            for (let j = i + 1; j < n; j++) {
+              const p = i ? r[i - 1] : S[d], q = j + 1 < n ? r[j + 1] : E[d];
+              const dc = C[p][r[j]] + (rC[j] - rC[i]) + edge(C, r[i], q) - (C[p][r[i]] + (fC[j] - fC[i]) + edge(C, r[j], q));
+              const dt = T[p][r[j]] + (rT[j] - rT[i]) + edge(T, r[i], q) - (T[p][r[i]] + (fT[j] - fT[i]) + edge(T, r[j], q));
+              const delta = st.cs[d] + dc + over(st.ts[d] + dt, d) - old;
+              if (delta < -1e-6 && (!best || delta < best.delta)) best = { delta, i, j, dc, dt };
+            }
+          }
+          if (best) {
+            const seg = r.slice(best.i, best.j + 1).reverse();
+            r.splice(best.i, seg.length, ...seg);
+            st.cs[d] += best.dc; st.ts[d] += best.dt;
+            improved = true;
+          }
+        }
+      }
+      return st;
+    }
+
+    const clone = (st) => ({ routes: st.routes.map((r) => r.slice()), cs: st.cs.slice(), ts: st.ts.slice() });
+
+    function* solve(opts) {
+      const budget = opts.timeBudgetMs ?? 400;
+      const rnd = mulberry32(opts.seed ?? 20260930);
+      // 起手:離第一天起點越遠的越先插
+      const order = targets.slice().sort((x, y) => C[S[0]][y] - C[S[0]][x]);
+      let cur = state(Array.from({ length: D }, () => []));
+      for (const x of order) insertBest(cur, x);
+      improve(cur);
+      let curObj = objOf(cur), best = clone(cur), bestObj = curObj;
+      const t0 = Date.now();
+      const maxIter = opts.maxIterations ?? Math.max(60, Math.round(budget * 1.5));
+      let iter = 0, lastYield = Date.now();
+      while (targets.length > 1 && Date.now() - t0 < budget && iter < maxIter) {
+        iter++;
+        const cand = clone(cur);
+        // 拆掉一群相近的站(以隨機一站為中心,依距離取最近的 k 站)
+        const k = Math.max(2, Math.min(targets.length, Math.round(targets.length * (0.05 + 0.15 * rnd()))));
+        const seed = targets[Math.floor(rnd() * targets.length)];
+        const near = targets.slice().sort((x, y) => (C[seed][x] + C[x][seed]) - (C[seed][y] + C[y][seed])).slice(0, k);
+        const drop = new Set(near);
+        cand.routes = cand.routes.map((r) => r.filter((x) => !drop.has(x)));
+        const re = state(cand.routes);
+        for (let i = near.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [near[i], near[j]] = [near[j], near[i]]; }
+        for (const x of near) insertBest(re, x);
+        improve(re);
+        const o = objOf(re);
+        if (o < curObj - 1e-6 || rnd() < 0.03) { cur = re; curObj = o; }
+        if (o < bestObj - 1e-6) { best = clone(re); bestObj = o; }
+        if (Date.now() - lastYield > 30 || iter % 10 === 0) {
+          lastYield = Date.now();
+          yield Math.min(1, Math.max((Date.now() - t0) / budget, iter / maxIter));
+        }
+      }
+      return { st: best, obj: bestObj, overSec: overOf(best) };
+    }
+    return { solve, evalRoute };
+  }
+
+  /**
+   * 多天規劃。
+   * @param opts {
+   *   targets: [站名],
+   *   days: [{start, endMode: 'free'|'return'|'station', end?, startTime?, dayEnd?}]
+   *         使用者設定的每天起終點與出發/收工時間("HH:MM",沒給就用 dayMinutes);
+   *         排不下時往後自動加天,沿用最後一天的設定
+   *   dayMinutes: 沒有個別時間的天可用幾分鐘,stayMin, profile,
+   *   penaltiesMin?, timeBudgetMs?(每個 λ), maxDays?, graph?
+   * }
+   * 回傳 generator:yield 進度(0..1),return {options:[{days:[...], rideSec, transfers, ...}], graph, dayCount}
+   */
+  function* planDays(network, opts) {
+    const graph = opts.graph && opts.graph.profile === opts.profile ? opts.graph : buildGraph(network, opts.profile);
+    const SI = graph.stationIndex;
+    const idx = (name, what) => {
+      const i = SI.get(name);
+      if (i == null) throw new Error(`找不到${what}:${name}`);
+      return i;
+    };
+    if (!opts.days || !opts.days.length) throw new Error("至少要設定一天的起點");
+    const specs = opts.days.map((d, n) => {
+      const s = idx(d.start, `第 ${n + 1} 天起點`);
+      const e = d.endMode === "return" ? s : d.endMode === "station" && d.end ? idx(d.end, `第 ${n + 1} 天終點`) : -1;
+      // 只給了其中一個時間時,另一個用與 scheduleDays 相同的預設值,兩邊才會描述同一天
+      const hasTime = d.startTime || d.dayEnd;
+      const startTime = hasTime ? d.startTime || DEFAULT_START : undefined;
+      const dayEnd = hasTime ? d.dayEnd || DEFAULT_END : undefined;
+      let minutes = opts.dayMinutes ?? 24 * 60;
+      if (hasTime) {
+        const w = dayWindow(startTime, dayEnd);
+        if (w.error) throw new Error(`第 ${n + 1} 天:${w.error}`);
+        minutes = w.end - w.start;
+      }
+      return { s, e, endMode: d.endMode === "station" && !d.end ? "free" : d.endMode, W: minutes * 60, startTime, dayEnd };
+    });
+    const tgt = [...new Set(opts.targets)].map((t) => idx(t, "車站"));
+
+    // 成本矩陣只算用得到的站:採點 + 各天起終點
+    const pts = [];
+    const pIdx = new Map();
+    const addPt = (st) => { if (!pIdx.has(st)) { pIdx.set(st, pts.length); pts.push(st); } return pIdx.get(st); };
+    for (const sp of specs) { addPt(sp.s); if (sp.e >= 0) addPt(sp.e); }
+    const T = tgt.map(addPt);
+    const penalties = (opts.penaltiesMin && opts.penaltiesMin.length ? opts.penaltiesMin : DEFAULT_PENALTIES_MIN).map((m) => m * 60);
+    const mats = buildMatrices(graph, pts, penalties);
+    // 到不了的站:成本會是 Infinity,整個搜尋失去意義,先擋下來(目前路網實測全部互通)
+    for (const x of T) {
+      if (!pts.some((_, y) => y !== x && Number.isFinite(mats[0].time[y][x]) && Number.isFinite(mats[0].time[x][y])) && pts.length > 1)
+        throw new Error("搭捷運到不了:" + network.stations[pts[x]].name);
+    }
+    const stay = opts.stayMin * 60;
+    const maxDays = opts.maxDays ?? 14;
+    const specFor = (d) => specs[Math.min(d, specs.length - 1)];
+    const solverFor = (M, D, lastW) => {
+      const S = [], E = [], W = [];
+      for (let d = 0; d < D; d++) { const sp = specFor(d); S.push(pIdx.get(sp.s)); E.push(sp.e >= 0 ? pIdx.get(sp.e) : -1); W.push(sp.W); }
+      return makeDaySolver(M.cost, M.time, S, E, W, stay, T, lastW);
+    };
+    let shown = 0; // 進度只增不減:試排天數時每一輪都從頭算,直接回報會讓進度條倒退
+    const runSolver = function* (M, D, budget, seed, from, span, lastW = opts.lastDayWeight ?? LAST_DAY_WEIGHT) {
+      const it = solverFor(M, D, lastW).solve({ timeBudgetMs: budget, seed });
+      for (;;) {
+        const step = it.next();
+        if (step.done) return step.value;
+        shown = Math.max(shown, from + step.value * span);
+        yield shown;
+      }
+    };
+
+    // 天數:從下限開始加,直到不超時(或到上限)。下限 = 停留總時間 + 每站最近進站成本,除以每天可用時間
+    const budget = opts.timeBudgetMs ?? 400;
+    let lb = specs.length;
+    if (tgt.length) {
+      const M0 = mats[0];
+      let need = stay * T.length;
+      for (const x of T) {
+        let m = Infinity;
+        for (let y = 0; y < pts.length; y++) if (y !== x) m = Math.min(m, M0.time[y][x]);
+        need += m === Infinity ? 0 : m;
+      }
+      lb = Math.max(lb, Math.ceil(need / Math.max(...specs.map((sp) => sp.W))));
+    }
+    let D = Math.min(Math.max(1, lb), maxDays);
+    const trialShare = 0.3;
+    for (;;) {
+      // 試排只判斷「幾天排得下」:不加最後一天的權重,否則它會為了縮短最後一天而容許前面超時,天數被多估
+      const r = yield* runSolver(mats[0], D, Math.max(40, budget / 3), 77 + D, 0, trialShare * Math.min(1, D / (lb + 3)), 0);
+      if (r.overSec <= 0 || D >= maxDays || !tgt.length) break;
+      D++;
+    }
+
+    // 每個 λ 各排兩次:有最後一天權重(前面天有空檔時會用上)、沒有(前面天已排滿時,
+    // 加權重只會讓搜尋變難、車程變長)。兩種解一起進下面的挑選,由「哪天集完」決定
+    const lastWs = [opts.lastDayWeight ?? LAST_DAY_WEIGHT, 0];
+    const runs = [];
+    for (let li = 0; li < mats.length; li++) for (const w of lastWs) runs.push({ li, w });
+    const raw = [];
+    for (let ri = 0; ri < runs.length; ri++) {
+      const { li, w } = runs[ri];
+      const M = mats[li];
+      const span = (1 - trialShare) / runs.length;
+      const r = yield* runSolver(M, D, budget / lastWs.length, 1000 + li, trialShare + span * ri, span, w);
+      // 天數是用短時間試排決定的,正式搜尋可能用更少天就排完:拿掉空的天。
+      // 夾在中間的空天保留(拿掉會讓後面的天對到別天的起終點)。最後一個設定之後的天起終點都相同,
+      // 那一組裡空的天拿掉、有排站的往前併
+      const head = r.st.routes.slice(0, specs.length - 1);
+      let tail = r.st.routes.slice(specs.length - 1).filter((route) => route.length);
+      const routes = head.concat(tail);
+      // 排在最後面的空天也拿掉(後面沒有別天,不會錯位),至少留一天
+      while (routes.length > 1 && !routes[routes.length - 1].length) routes.pop();
+      if (!routes.length) routes.push([]);
+      let rideSec = 0, transfers = 0, lastDaySec = 0;
+      routes.forEach((route, d) => {
+        if (!route.length) return; // 不出門的那天不算車程
+        const sp = specFor(d);
+        const seq = [pIdx.get(sp.s), ...route];
+        if (sp.e >= 0) seq.push(pIdx.get(sp.e));
+        let t = stay * route.length;
+        for (let i = 0; i + 1 < seq.length; i++) { t += M.time[seq[i]][seq[i + 1]]; transfers += M.xfer[seq[i]][seq[i + 1]]; }
+        rideSec += t - stay * route.length;
+        lastDaySec = t;
+      });
+      raw.push({ penaltyMin: M.penaltySec / 60, M, routes, rideSec, transfers, overSec: r.overSec, dayCount: routes.length, lastDaySec });
+    }
+    yield 1;
+    if (!raw.length) throw new Error("沒有算出任何方案");
+
+    // 先比「哪天集完」:天數最少、最後一天收工時間與最早的差不到 FINISH_SLACK_SEC 的才留下,
+    // 再在裡面比總時間與換車。只比總時間的話,把今天整天留空的方案車程最短,會被挑成「最省時」
+    // 有不超時的方案就只從不超時的裡面挑
+    const minOver = Math.min(...raw.map((r) => r.overSec));
+    const ok = raw.filter((r) => r.overSec <= minOver + 1);
+    const minDays = Math.min(...ok.map((r) => r.dayCount));
+    const minLast = Math.min(...ok.filter((r) => r.dayCount === minDays).map((r) => r.lastDaySec));
+    const early = ok.filter((r) => r.dayCount === minDays && r.lastDaySec <= minLast + FINISH_SLACK_SEC);
+    const uniq = [];
+    for (const r of early) {
+      if (uniq.some((u) => u.transfers === r.transfers && Math.abs(u.rideSec - r.rideSec) < 1)) continue;
+      uniq.push(r);
+    }
+    const front = uniq.filter((a) => !uniq.some((b) => b !== a && b.overSec <= a.overSec && b.rideSec <= a.rideSec + 1e-6 && b.transfers <= a.transfers && (b.rideSec < a.rideSec - 1 || b.transfers < a.transfers)));
+    front.sort((a, b) => a.rideSec - b.rideSec);
+
+    const name = (st) => network.stations[st].name;
+    const options = front.map((r) => {
+      const days = r.routes.map((route, d) => {
+        const sp = specFor(d);
+        const legs = [];
+        let from = pIdx.get(sp.s);
+        const push = (to, stamp) => {
+          const leg = extractLeg(graph, r.M.sps[from], pts[from], pts[to]);
+          leg.from = name(pts[from]);
+          leg.to = name(pts[to]);
+          leg.stamp = stamp;
+          legs.push(leg);
+          from = to;
+        };
+        for (const x of route) push(x, true);
+        if (sp.e >= 0 && route.length) push(pIdx.get(sp.e), false);
+        return {
+          index: d + 1,
+          start: name(sp.s),
+          end: sp.e >= 0 ? name(sp.e) : null,
+          endMode: sp.endMode,
+          auto: d >= specs.length,
+          startTime: sp.startTime,
+          dayEnd: sp.dayEnd,
+          legs,
+          stamps: route.length,
+        };
+      });
+      return {
+        penaltyMin: r.penaltyMin,
+        rideSec: r.rideSec,
+        transfers: r.transfers,
+        stayCount: tgt.length,
+        totalSec: r.rideSec + tgt.length * stay,
+        overSec: r.overSec,
+        exact: false,
+        days,
+      };
+    });
+    return { options, graph, dayCount: Math.max(...options.map((o) => o.days.length)) };
+  }
+
+  /** 多天方案排進時刻表:每天都從出發時間開始 */
+  function scheduleDays(option, opts) {
+    const stay = opts.stayMin;
+    return option.days.map((d) => {
+      // 每天可以有自己的出發/收工時間,沒有就用共用的
+      const w = dayWindow(d.startTime || opts.startTime || DEFAULT_START, d.dayEnd || opts.dayEnd || DEFAULT_END);
+      const dayStart = w.error ? hhmmToMin(DEFAULT_START) : w.start;
+      const dayEnd = w.error ? hhmmToMin(DEFAULT_END) : w.end;
+      const items = [];
+      let t = dayStart;
+      d.legs.forEach((leg, i) => {
+        const legMin = leg.timeSec / 60;
+        if (leg.steps.length) items.push({ type: "leg", leg, depart: t, arrive: t + legMin, index: i });
+        t += legMin;
+        if (leg.stamp) {
+          items.push({ type: "stamp", station: leg.to, at: t, leave: t + stay });
+          t += stay;
+        } else if (leg.steps.length) {
+          items.push({ type: "end", station: leg.to, at: t });
+        }
+      });
+      return { ...d, items, begin: dayStart, finish: t, overMin: Math.max(0, t - dayEnd) };
+    });
+  }
+
+  return { buildGraph, dijkstra, extractLeg, plan, schedule, planDays, scheduleDays, dayWindow, validTime, _makeDaySolver: makeDaySolver, heldKarp, localSearch, tourCost, solveTSP, DEFAULT_PENALTIES_MIN };
+});
+</script>
+<script>// 路網示意圖:標記已集站(點選)與畫出路線(輸出)共用。
+// 座標是手排的示意圖版面(不是地理座標),只用來畫圖,不進任何計算。
+// 瀏覽器:window.MetroMap;Node 測試:require("../src/map.js")(只用 layout 部分)。
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.MetroMap = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  // ---------- 版面 ----------
+  // 每條線是幾段「鏈」,依行車順序列出站名。「站名@x,y」是錨點,「@x,y」是轉折點;
+  // 其他站沿著鏈的折線、在前後錨點之間等距排開。x 向東、y 向南,單位 = 一格。
+  // 轉乘站必須在某一條鏈上當錨點,其他鏈直接引用站名即可。
+  const CHAINS = {
+    R: [
+      ["淡水@-7,-17", "紅樹林", "竹圍", "關渡", "忠義", "@-3,-17", "復興崗", "北投@0,-14",
+        "奇岩", "唭哩岸", "石牌", "明德", "芝山", "士林", "劍潭", "圓山", "民權西路@0,-6",
+        "雙連", "中山@0,-3", "台北車站@0,0", "台大醫院", "中正紀念堂@0,3",
+        "東門@2,3", "大安森林公園", "大安@5,3", "信義安和", "台北101/世貿", "象山", "廣慈/奉天宮@9,3"],
+      ["北投", "新北投@1,-15"],
+    ],
+    BL: [
+      ["頂埔@-9,10", "永寧", "土城", "海山", "亞東醫院", "府中", "板橋@-6,4",
+        "新埔", "江子翠", "龍山寺", "西門@-2,0", "台北車站", "善導寺", "忠孝新生@2,0",
+        "忠孝復興@5,0", "忠孝敦化", "國父紀念館", "市政府", "永春", "後山埤", "昆陽", "南港", "南港展覽館@13,0"],
+    ],
+    G: [
+      ["松山@8,-3", "南京三民", "台北小巨蛋", "南京復興@5,-3", "松江南京@2,-3", "中山", "北門", "西門",
+        "小南門", "中正紀念堂", "古亭@1,4", "@3,6", "台電大樓", "公館", "萬隆", "景美",
+        "大坪林@3,10", "七張@3,11", "新店區公所", "新店@3,13"],
+      ["七張", "小碧潭@2,12"],
+    ],
+    O: [
+      ["南勢角@-1,9", "景安@-1,8", "@-1,6", "永安市場", "頂溪", "古亭", "東門", "忠孝新生", "松江南京",
+        "行天宮", "中山國小", "@2,-6", "民權西路", "大橋頭@-2,-6"],
+      ["大橋頭", "台北橋", "菜寮", "三重", "先嗇宮", "頭前庄@-7,-1", "新莊", "輔大", "丹鳳", "迴龍@-11,-1"],
+      ["大橋頭", "@-2,-7", "三重國小", "三和國中", "徐匯中學", "三民高中", "蘆洲@-5,-10"],
+    ],
+    BR: [
+      ["動物園@8,9", "木柵", "萬芳社區", "萬芳醫院", "辛亥", "麟光", "六張犁", "@5,6", "科技大樓", "大安",
+        "忠孝復興", "南京復興", "中山國中", "松山機場", "大直", "@5,-8", "劍南路", "西湖", "港墘", "文德",
+        "內湖", "大湖公園", "葫洲", "@13,-8", "東湖", "南港軟體園區", "南港展覽館"],
+    ],
+    Y: [
+      ["大坪林", "十四張", "秀朗橋", "景平", "景安", "中和", "橋和", "中原", "板新", "板橋",
+        "新埔民生", "頭前庄", "幸福", "新北產業園區@-9,-3"],
+    ],
+  };
+
+  // 標籤位置:r/l = 右/左橫書,ne/nw/se/sw = 斜角橫書;t/b = 上/下直書。沒列的依走向自動決定。
+  const LABEL = {
+    淡水: "l", 新北投: "r", 北投: "l", 中山: "nw", 台北車站: "ne", 台大醫院: "r",
+    西門: "l", 北門: "l", 小南門: "l", 東門: "se", 古亭: "r", 大安: "ne",
+    忠孝新生: "se", 松江南京: "ne", 南京復興: "ne", 忠孝復興: "ne", 中正紀念堂: "sw", 南港展覽館: "r", 大橋頭: "l",
+    頭前庄: "se", 板橋: "l", 大坪林: "r", 七張: "r", 小碧潭: "l", 南勢角: "l",
+    迴龍: "t", 蘆洲: "l", 松山: "r", "廣慈/奉天宮": "r", 動物園: "r", 新店: "r", 頂埔: "l",
+    新北產業園區: "l", 新埔民生: "l", 新埔: "b", 大安森林公園: "t", 大直: "l", 南港軟體園區: "l",
+    科技大樓: "l", 六張犁: "l", 民權西路: "se", 景安: "nw",
+  };
+
+  function parseToken(tok) {
+    const at = tok.indexOf("@");
+    if (at < 0) return { name: tok, xy: null };
+    const [x, y] = tok.slice(at + 1).split(",").map(Number);
+    return { name: tok.slice(0, at) || null, xy: [x, y] };
+  }
+
+  /** 由 CHAINS 算出每站座標、每段相鄰站的折線、標籤方向。 */
+  function layout() {
+    const pos = new Map();
+    const parsed = {};
+    for (const [line, chains] of Object.entries(CHAINS)) {
+      parsed[line] = chains.map((c) => c.map(parseToken));
+      for (const chain of parsed[line]) for (const t of chain) if (t.name && t.xy) pos.set(t.name, t.xy);
+    }
+    // 沿鏈等距插值
+    for (const line of Object.keys(parsed)) {
+      for (const chain of parsed[line]) {
+        const fixed = (t) => (t.name ? pos.get(t.name) : t.xy);
+        let i = 0;
+        while (i < chain.length) {
+          if (i === 0 && !(chain[0].name && pos.has(chain[0].name))) throw new Error(`${line} 鏈首 ${chain[0].name} 沒有座標`);
+          // 找下一個有座標的站(錨點或已知轉乘站)
+          let j = i + 1;
+          while (j < chain.length && !(chain[j].name && pos.has(chain[j].name))) j++;
+          if (j >= chain.length) {
+            if (i + 1 < chain.length) throw new Error(`${line} 鏈尾 ${chain[chain.length - 1].name} 沒有座標`);
+            break;
+          }
+          const names = [];
+          for (let k = i + 1; k < j; k++) if (chain[k].name) names.push(k);
+          // 各站在折線上等距:用弧長參數化(轉折點只是折線頂點,不佔站位)
+          const poly = [];
+          for (let k = i; k <= j; k++) {
+            const t = chain[k];
+            if (!t.name) poly.push(t.xy);
+            else if (k === i || k === j) poly.push(fixed(t));
+          }
+          const segLen = [];
+          let total = 0;
+          for (let k = 0; k + 1 < poly.length; k++) {
+            const l = Math.hypot(poly[k + 1][0] - poly[k][0], poly[k + 1][1] - poly[k][1]);
+            segLen.push(l);
+            total += l;
+          }
+          const at = (d) => {
+            for (let k = 0; k < segLen.length; k++) {
+              if (d <= segLen[k] || k === segLen.length - 1) {
+                const f = segLen[k] ? d / segLen[k] : 0;
+                return [poly[k][0] + (poly[k + 1][0] - poly[k][0]) * f, poly[k][1] + (poly[k + 1][1] - poly[k][1]) * f];
+              }
+              d -= segLen[k];
+            }
+          };
+          names.forEach((k, n) => pos.set(chain[k].name, at((total * (n + 1)) / (names.length + 1))));
+          i = j;
+        }
+      }
+    }
+
+    // 相鄰站之間的折線(含轉折點),key = 線|甲|乙(雙向都存)
+    const segments = new Map();
+    const lineSegs = {};
+    const neighbors = new Map(); // 站 → 相鄰點(判斷走向用)
+    for (const [line, chains] of Object.entries(parsed)) {
+      lineSegs[line] = [];
+      for (const chain of chains) {
+        let prev = null;
+        let bends = [];
+        for (const t of chain) {
+          if (!t.name) { bends.push(t.xy); continue; }
+          if (prev) {
+            const pts = [pos.get(prev), ...bends, pos.get(t.name)];
+            segments.set(`${line}|${prev}|${t.name}`, pts);
+            segments.set(`${line}|${t.name}|${prev}`, [...pts].reverse());
+            lineSegs[line].push(pts);
+            if (!neighbors.has(prev)) neighbors.set(prev, []);
+            if (!neighbors.has(t.name)) neighbors.set(t.name, []);
+            neighbors.get(prev).push(pts[1]);
+            neighbors.get(t.name).push(pts[pts.length - 2]);
+          }
+          prev = t.name;
+          bends = [];
+        }
+      }
+    }
+
+    const labels = new Map();
+    for (const [name, p] of pos) {
+      if (LABEL[name]) { labels.set(name, LABEL[name]); continue; }
+      const nb = neighbors.get(name) || [];
+      let hx = 0, hy = 0;
+      for (const q of nb) { hx += Math.abs(q[0] - p[0]); hy += Math.abs(q[1] - p[1]); }
+      labels.set(name, hx > hy * 1.2 ? "b" : "r");
+    }
+    return { pos, segments, lineSegs, labels };
+  }
+
+  // ---------- 繪圖(只在瀏覽器用) ----------
+  const NS = "http://www.w3.org/2000/svg";
+  const U = 40; // 一格幾個 SVG 單位
+  const PAD = 2.2; // 邊界留白(格)
+
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs || {})) if (v != null) e.setAttribute(k, v);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  const pathD = (pts) => pts.map((p, i) => `${i ? "L" : "M"}${(p[0] * U).toFixed(1)} ${(p[1] * U).toFixed(1)}`).join("");
+
+  /**
+   * @param host 放地圖的容器
+   * @param net  network.json
+   * @param opts { onStation(name), lineInk(line) }
+   */
+  function create(host, net, opts = {}) {
+    const L = layout();
+    const stations = new Map(net.stations.map((s) => [s.name, s]));
+    const excluded = new Set(net.activityExcludeLines || ["Y"]);
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const [x, y] of L.pos.values()) {
+      minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+    }
+    const full = {
+      x: (minX - PAD) * U, y: (minY - PAD * 0.7) * U,
+      w: (maxX - minX + PAD * 2) * U, h: (maxY - minY + PAD * 1.4) * U,
+    };
+
+    host.classList.add("mmap");
+    host.innerHTML = "";
+    const svg = el("svg", { class: "mmap-svg", role: "img", "aria-label": "台北捷運路網示意圖" }, host);
+    const gLines = el("g", { class: "mm-lines" }, svg);
+    const gRoute = el("g", { class: "mm-route" }, svg);
+    const gStations = el("g", { class: "mm-stations" }, svg);
+    const gMarks = el("g", { class: "mm-marks" }, svg);
+
+    // 路線底圖
+    const lineOrder = ["Y", "BR", "BL", "G", "O", "R"];
+    for (const line of lineOrder) {
+      if (!L.lineSegs[line]) continue;
+      const color = net.lines[line].color;
+      for (const pts of L.lineSegs[line]) {
+        el("path", { d: pathD(pts), class: `mm-line${excluded.has(line) ? " mm-line-ex" : ""}`, stroke: color }, gLines);
+      }
+    }
+
+    // 車站
+    const nodes = new Map();
+    for (const [name, [x, y]] of L.pos) {
+      const s = stations.get(name);
+      if (!s) continue;
+      const lines = Object.keys(s.codes);
+      const inter = lines.length > 1;
+      const g = el("g", {
+        class: `mm-st${inter ? " mm-inter" : ""}${s.activity ? "" : " mm-ex"}`,
+        transform: `translate(${(x * U).toFixed(1)} ${(y * U).toFixed(1)})`,
+        "data-name": name,
+      }, gStations);
+      const ring = el("circle", { class: "mm-dot", r: inter ? 9 : 7, stroke: inter ? null : net.lines[lines[0]].color }, g);
+      el("path", { class: "mm-check", d: "M-4.5 0.5 L-1.2 3.8 L4.8 -3" }, g);
+      const side = L.labels.get(name) || "r";
+      const t = el("text", { class: `mm-label mm-lab-${side}` }, g);
+      t.textContent = name;
+      const off = inter ? 15 : 12;
+      if (side === "r") { t.setAttribute("x", off); t.setAttribute("y", 5); }
+      else if (side === "l") { t.setAttribute("x", -off); t.setAttribute("y", 5); t.setAttribute("text-anchor", "end"); }
+      else if (side.length === 2) {
+        t.setAttribute("x", side[1] === "e" ? off * 0.75 : -off * 0.75);
+        t.setAttribute("y", side[0] === "n" ? -off * 0.55 : off * 1.15);
+        if (side[1] === "w") t.setAttribute("text-anchor", "end");
+      }
+      else if (side === "b") { t.setAttribute("x", 0); t.setAttribute("y", off); t.classList.add("mm-vert"); }
+      else { t.setAttribute("x", 0); t.setAttribute("y", -off); t.classList.add("mm-vert"); t.setAttribute("text-anchor", "end"); }
+      if (s.activity) {
+        el("circle", { class: "mm-hit", r: 17 }, g);
+        g.setAttribute("tabindex", "0");
+        g.setAttribute("role", "button");
+      }
+      nodes.set(name, { g, ring, s });
+    }
+
+    // ---------- 平移縮放 ----------
+    let view = { ...full };
+    const apply = () => {
+      svg.setAttribute("viewBox", `${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}`);
+      host.classList.toggle("mm-zoomed", view.w < full.w * 0.98);
+    };
+    apply();
+    const clampView = () => {
+      view.w = Math.min(full.w, Math.max(full.w / 8, view.w));
+      view.h = view.w * (full.h / full.w);
+      view.x = Math.min(full.x + full.w - view.w, Math.max(full.x, view.x));
+      view.y = Math.min(full.y + full.h - view.h, Math.max(full.y, view.y));
+    };
+    const toSvg = (cx, cy) => {
+      const r = svg.getBoundingClientRect();
+      return [view.x + ((cx - r.left) / r.width) * view.w, view.y + ((cy - r.top) / r.height) * view.h];
+    };
+    function zoomAt(factor, sx, sy) {
+      const nw = Math.min(full.w, Math.max(full.w / 8, view.w / factor));
+      const f = nw / view.w;
+      view.x = sx - (sx - view.x) * f;
+      view.y = sy - (sy - view.y) * f;
+      view.w = nw;
+      clampView();
+      apply();
+    }
+    function zoomCenter(factor) { zoomAt(factor, view.x + view.w / 2, view.y + view.h / 2); }
+    function reset() { view = { ...full }; apply(); }
+    function focus(names) {
+      const pts = names.map((n) => L.pos.get(n)).filter(Boolean);
+      if (!pts.length) return reset();
+      const xs = pts.map((p) => p[0] * U), ys = pts.map((p) => p[1] * U);
+      const bx = Math.min(...xs), by = Math.min(...ys), bw = Math.max(...xs) - bx, bh = Math.max(...ys) - by;
+      const w = Math.max(bw + 5 * U, (bh + 5 * U) * (full.w / full.h), full.w / 3);
+      view = { x: bx + bw / 2 - w / 2, y: by + bh / 2 - (w * full.h / full.w) / 2, w, h: 0 };
+      clampView();
+      apply();
+    }
+
+    const ptrs = new Map();
+    let drag = null;
+    let pinch = null;
+    let moved = false;
+    svg.addEventListener("pointerdown", (e) => {
+      ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      moved = false;
+      if (ptrs.size === 1) drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y };
+      if (ptrs.size === 2) {
+        const [a, b] = [...ptrs.values()];
+        // 記下開始時的畫面寬度與兩指中點底下的地圖位置:之後都相對這個狀態算,不累加
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, w: view.w, c: toSvg((a.x + b.x) / 2, (a.y + b.y) / 2) };
+        drag = null;
+      }
+    });
+    svg.addEventListener("pointermove", (e) => {
+      if (!ptrs.has(e.pointerId)) return;
+      ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinch && ptrs.size === 2) {
+        const [a, b] = [...ptrs.values()];
+        // 畫面寬度 = 開始時的寬度 × 手指距離的反比;原本那個地圖點固定在兩指中點底下(兩指一起移動 = 拖曳)
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        const r = svg.getBoundingClientRect();
+        const nw = Math.min(full.w, Math.max(full.w / 8, (pinch.w * pinch.d) / Math.max(d, 1)));
+        const nh = nw * (full.h / full.w);
+        view.w = nw;
+        view.x = pinch.c[0] - (((a.x + b.x) / 2 - r.left) / r.width) * nw;
+        view.y = pinch.c[1] - (((a.y + b.y) / 2 - r.top) / r.height) * nh;
+        clampView();
+        apply();
+        moved = true;
+        return;
+      }
+      if (drag) {
+        const r = svg.getBoundingClientRect();
+        const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (Math.hypot(dx, dy) > 6) moved = true;
+        if (moved && host.classList.contains("mm-zoomed")) {
+          if (!svg.hasPointerCapture(e.pointerId)) svg.setPointerCapture(e.pointerId);
+          view.x = drag.vx - (dx / r.width) * view.w;
+          view.y = drag.vy - (dy / r.height) * view.h;
+          clampView();
+          apply();
+        }
+      }
+    });
+    const up = (e) => {
+      ptrs.delete(e.pointerId);
+      if (ptrs.size < 2) pinch = null;
+      if (!ptrs.size) drag = null;
+    };
+    svg.addEventListener("pointerup", up);
+    svg.addEventListener("pointercancel", up);
+    svg.addEventListener("wheel", (e) => {
+      if (!e.ctrlKey && !e.metaKey && !host.classList.contains("mm-zoomed")) return; // 沒放大時讓頁面照常捲動
+      e.preventDefault();
+      const [sx, sy] = toSvg(e.clientX, e.clientY);
+      zoomAt(Math.exp(-e.deltaY * 0.0022), sx, sy);
+    }, { passive: false });
+
+    // 點站
+    const fire = (g) => { if (g && opts.onStation) opts.onStation(g.dataset.name); };
+    // 全圖時站距在手機上只有十來 px:點不準也沒關係,取最近的可點站
+    const clickable = [...nodes.values()].filter((n) => n.s.activity);
+    svg.addEventListener("click", (e) => {
+      if (moved) return;
+      const direct = e.target.closest(".mm-st[tabindex]");
+      if (direct) return fire(direct);
+      const [sx, sy] = toSvg(e.clientX, e.clientY);
+      const r = svg.getBoundingClientRect();
+      const reach = Math.max(0.6 * U, (22 / r.width) * view.w);
+      let best = null, bd = Infinity;
+      for (const n of clickable) {
+        const [x, y] = L.pos.get(n.s.name);
+        const d = Math.hypot(x * U - sx, y * U - sy);
+        if (d < bd) { bd = d; best = n; }
+      }
+      if (best && bd <= reach) fire(best.g);
+    });
+    svg.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const g = e.target.closest(".mm-st[tabindex]");
+      if (!g) return;
+      e.preventDefault();
+      fire(g);
+    });
+
+    // 縮放按鈕
+    const ctl = document.createElement("div");
+    ctl.className = "mm-ctl";
+    ctl.innerHTML = `<button type="button" data-z="in" aria-label="放大">+</button><button type="button" data-z="out" aria-label="縮小">−</button><button type="button" data-z="fit" aria-label="顯示全圖">全圖</button>`;
+    ctl.addEventListener("click", (e) => {
+      const z = e.target.closest("button")?.dataset.z;
+      if (z === "in") zoomCenter(1.6);
+      if (z === "out") zoomCenter(1 / 1.6);
+      if (z === "fit") reset();
+    });
+    host.appendChild(ctl);
+
+    // ---------- 狀態 ----------
+    /** 進度模式:done = 已集站集合 */
+    function showProgress({ done, starts = [] }) {
+      host.dataset.mode = "progress";
+      gRoute.innerHTML = "";
+      gMarks.innerHTML = "";
+      for (const [name, n] of nodes) {
+        const isDone = done.has(name);
+        n.g.classList.toggle("is-done", isDone && n.s.activity);
+        n.g.classList.remove("on-route", "is-stop", "is-dim");
+        if (n.s.activity) {
+          n.g.setAttribute("aria-pressed", isDone ? "true" : "false");
+          n.g.setAttribute("aria-label", `${name}${isDone ? ",已集" : ",未集"}`);
+        }
+      }
+      starts.forEach((s) => marker(s, "起", "mm-start"));
+    }
+
+    function marker(name, text, cls) {
+      const p = L.pos.get(name);
+      if (!p) return;
+      const g = el("g", { class: `mm-mark ${cls}`, transform: `translate(${p[0] * U} ${p[1] * U})` }, gMarks);
+      el("circle", { r: 12 }, g);
+      const t = el("text", { y: 4.5 }, g);
+      t.textContent = text;
+      return g;
+    }
+
+    /**
+     * 路線模式
+     * @param route { starts:[站名], ends:[站名], stops:[{name, n, active}], rides:[{line, stations:[...], active}], walks:[{from,to,active}], done:Set }
+     */
+    function showRoute(route) {
+      host.dataset.mode = "route";
+      gRoute.innerHTML = "";
+      gMarks.innerHTML = "";
+      const onRoute = new Set();
+      const drawRide = (r) => {
+        const color = net.lines[r.line].color;
+        for (let i = 0; i + 1 < r.stations.length; i++) {
+          const pts = L.segments.get(`${r.line}|${r.stations[i]}|${r.stations[i + 1]}`);
+          if (!pts) continue;
+          el("path", { d: pathD(pts), class: `mm-ride${r.active ? "" : " mm-faded"}`, stroke: color }, gRoute);
+          if (r.active) { onRoute.add(r.stations[i]); onRoute.add(r.stations[i + 1]); }
+        }
+      };
+      route.rides.filter((r) => !r.active).forEach(drawRide);
+      route.rides.filter((r) => r.active).forEach(drawRide);
+      for (const w of route.walks) {
+        const a = L.pos.get(w.from), b = L.pos.get(w.to);
+        if (a && b) el("path", { d: pathD([a, b]), class: `mm-walk${w.active ? "" : " mm-faded"}` }, gRoute);
+      }
+      const stopSet = new Set(route.stops.filter((s) => s.active).map((s) => s.name));
+      for (const [name, n] of nodes) {
+        n.g.classList.toggle("is-done", route.done.has(name) && n.s.activity);
+        n.g.classList.toggle("on-route", onRoute.has(name));
+        n.g.classList.toggle("is-stop", stopSet.has(name));
+        n.g.classList.toggle("is-dim", !onRoute.has(name) && !stopSet.has(name));
+        n.g.removeAttribute("aria-pressed");
+        if (n.s.activity) n.g.setAttribute("aria-label", name);
+      }
+      for (const s of route.stops) {
+        const m = marker(s.name, String(s.n), `mm-num${s.active ? "" : " mm-faded"}${String(s.n).length > 2 ? " mm-num3" : ""}`);
+        if (m) m.dataset.name = s.name;
+      }
+      const starts = new Set(route.starts);
+      route.ends.filter((e) => !starts.has(e)).forEach((e) => marker(e, "終", "mm-start"));
+      starts.forEach((s) => marker(s, "起", "mm-start"));
+    }
+
+    return { showProgress, showRoute, focus, reset, layout: L };
+  }
+
+  return { CHAINS, layout, create };
+});
+</script>
+<script>(function () {
+  "use strict";
+
+  const NET = window.METRO_NETWORK;
+  const E = window.MetroEngine;
+  const STORE_KEY = "metro-stamp:v1";
+  const $ = (sel) => document.querySelector(sel);
+
+  const stations = NET.stations;
+  const byName = new Map(stations.map((s) => [s.name, s]));
+  const activityNames = stations.filter((s) => s.activity).map((s) => s.name);
+  const excluded = new Set(NET.activityExcludeLines || ["Y"]);
+  const LINE_IDS = Object.keys(NET.lines);
+  const lineInk = (id) => (id === "Y" || id === "O" ? "#1b1b1b" : "#ffffff");
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const codeNum = (code) => {
+    const m = /^[A-Z]+(\d+)(A?)$/.exec(code);
+    return m ? Number(m[1]) + (m[2] ? 0.5 : 0) : 0;
+  };
+  const stationsOnLine = (line) =>
+    stations.filter((s) => s.codes[line]).sort((a, b) => codeNum(a.codes[line]) - codeNum(b.codes[line]));
+
+  // ---------- 狀態 ----------
+  const DEFAULTS = {
+    targets: activityNames, // 預設一站都還沒集
+    dayMode: "same", // same = 每天同一組起終點;each = 每天分別設定
+    days: [{ start: "台北車站", endMode: "free", end: "台北車站", startTime: "09:00", dayEnd: "23:00" }],
+    stayMin: 5,
+    profile: "weekday_off",
+  };
+  const validTime = E.validTime;
+  const validDay = (d) => d && typeof d === "object" && byName.has(d.start) && ["free", "return", "station"].includes(d.endMode) && (d.endMode !== "station" || byName.has(d.end));
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      // 舊版只存一組 start / endMode / end
+      let days = Array.isArray(s.days) ? s.days.filter(validDay) : [];
+      if (!days.length && s.start) days = [{ start: s.start, endMode: s.endMode || "free", end: s.end || s.start }].filter(validDay);
+      if (!days.length) days = DEFAULTS.days;
+      // 舊版的出發/收工時間是全部天共用的
+      days = days.map((d) => ({
+        ...d,
+        startTime: validTime(d.startTime) ? d.startTime : validTime(s.startTime) ? s.startTime : "09:00",
+        dayEnd: validTime(d.dayEnd) ? d.dayEnd : validTime(s.dayEnd) ? s.dayEnd : "23:00",
+      }));
+      // 存檔可能被同網域的其他頁面改過:每個欄位都驗證,不合格就用預設值(有些值會進 innerHTML)
+      const stay = Number(s.stayMin);
+      return {
+        ...DEFAULTS,
+        days,
+        dayMode: s.dayMode === "each" ? "each" : "same",
+        stayMin: Number.isInteger(stay) && stay >= 1 && stay <= 30 ? stay : DEFAULTS.stayMin,
+        profile: Object.hasOwn(NET.profiles, s.profile) ? s.profile : DEFAULTS.profile,
+        // 舊版的「範例進度」(sample: true)不是使用者自己點的,當成從頭開始
+        targets: s.sample === true ? DEFAULTS.targets : (Array.isArray(s.targets) ? s.targets : []).filter((n) => byName.has(n)),
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({ ...state, targets: [...state.targets] }));
+    } catch (e) { /* 無痕模式等情況:不記也能用 */ }
+  }
+
+  const saved = load();
+  const loaded = saved || DEFAULTS;
+  const state = { ...loaded, days: loaded.days.map((d) => ({ ...d })), targets: new Set(loaded.targets) };
+  let result = null;
+  let selected = 0;
+  let graphCache = {};
+  let runToken = 0;
+  let dayView = 1; // 顯示哪一天;0 = 全部
+  let pmap = null;
+  let rmap = null;
+
+  const activeDays = () => (state.dayMode === "same" ? state.days.slice(0, 1) : state.days);
+
+  // ---------- 表單 ----------
+  function stationOptions(select, includeAll) {
+    for (const line of LINE_IDS) {
+      if (!includeAll && excluded.has(line)) continue;
+      const og = document.createElement("optgroup");
+      og.label = NET.lines[line].name;
+      for (const s of stationsOnLine(line)) {
+        const o = document.createElement("option");
+        o.value = s.name;
+        o.textContent = `${s.codes[line]} ${s.name}`;
+        og.appendChild(o);
+      }
+      select.appendChild(og);
+    }
+  }
+
+  // 終點選單:前兩項是「不限」「回到起點」,其後是車站
+  const END_FREE = "__free", END_RETURN = "__return";
+  function endValue(d) {
+    return d.endMode === "free" ? END_FREE : d.endMode === "return" ? END_RETURN : d.end;
+  }
+  function setEnd(d, v) {
+    if (v === END_FREE) d.endMode = "free";
+    else if (v === END_RETURN) d.endMode = "return";
+    else { d.endMode = "station"; d.end = v; }
+  }
+
+  function renderDays() {
+    const root = $("#days");
+    root.innerHTML = "";
+    const list = activeDays();
+    list.forEach((d, i) => {
+      const row = document.createElement("div");
+      row.className = "day-row";
+      const label = state.dayMode === "same" ? "每天" : `第 ${i + 1} 天`;
+      row.innerHTML = `<span class="day-no">${label}</span>
+        <label class="field"><span class="flabel">起點</span><select data-k="start" aria-label="${label}起點"></select></label>
+        <label class="field"><span class="flabel">終點</span><select data-k="end" aria-label="${label}終點"></select></label>
+        <label class="field"><span class="flabel">出發</span><input type="time" step="300" data-k="startTime" aria-label="${label}出發時間"></label>
+        <label class="field"><span class="flabel">收工</span><input type="time" step="300" data-k="dayEnd" aria-label="${label}收工時間"></label>`;
+      for (const k of ["startTime", "dayEnd"]) {
+        const inp = row.querySelector(`[data-k="${k}"]`);
+        inp.value = d[k];
+        inp.addEventListener("change", () => { if (validTime(inp.value)) { d[k] = inp.value; touched(); } });
+      }
+      if (i === 0) {
+        const now = document.createElement("button");
+        now.type = "button";
+        now.className = "ghost now";
+        now.textContent = state.dayMode === "same" ? "今天從現在出發" : "現在出發";
+        now.addEventListener("click", departNow);
+        row.appendChild(now);
+      }
+      const s = row.querySelector('[data-k="start"]');
+      stationOptions(s, true);
+      s.value = d.start;
+      s.addEventListener("change", () => { d.start = s.value; touched(); renderPicker(); });
+      const e = row.querySelector('[data-k="end"]');
+      e.innerHTML = `<option value="${END_FREE}">不限</option><option value="${END_RETURN}">回到起點</option>`;
+      stationOptions(e, true);
+      e.value = endValue(d);
+      e.addEventListener("change", () => { setEnd(d, e.value); touched(); });
+      if (state.dayMode === "each" && list.length > 1) {
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "day-del";
+        del.setAttribute("aria-label", `刪除${label}`);
+        del.textContent = "✕";
+        del.addEventListener("click", () => { state.days.splice(i, 1); renderDays(); touched(); renderPicker(); });
+        row.appendChild(del);
+      }
+      root.appendChild(row);
+    });
+    $("#add-day").hidden = state.dayMode !== "each";
+    document.querySelectorAll('input[name="dayMode"]').forEach((r) => (r.checked = r.value === state.dayMode));
+  }
+
+  // 今天比較晚出門:第 1 天的出發時間改成現在(進位到 5 分鐘)。
+  // 「每天相同」時改成分別設定:第 1 天從現在出發,之後幾天照原本的設定
+  function departNow() {
+    const d = new Date();
+    let m = Math.ceil((d.getHours() * 60 + d.getMinutes()) / 5) * 5;
+    if (m >= 24 * 60) m = 24 * 60 - 5;
+    const hhmm = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+    // 已經過了今天的收工時間:不改設定,只提示
+    if (E.dayWindow(hhmm, state.days[0].dayEnd).error) {
+      const btn = document.querySelector("#days .now");
+      if (btn) {
+        const was = btn.textContent;
+        btn.textContent = `已過收工時間 ${state.days[0].dayEnd}`;
+        setTimeout(() => (btn.textContent = was), 2500);
+      }
+      return;
+    }
+    if (state.dayMode === "same") {
+      state.dayMode = "each";
+      state.days = [{ ...state.days[0], startTime: hhmm }, { ...state.days[0] }];
+    } else {
+      state.days[0].startTime = hhmm;
+    }
+    renderDays();
+    touched();
+  }
+
+  let undoSnap = null, undoTimer = 0;
+  const hideUndo = () => { $("#undo").hidden = true; undoSnap = null; clearTimeout(undoTimer); };
+
+  function initForm() {
+    const prof = $("#profile");
+    for (const [k, v] of Object.entries(NET.profiles)) {
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = v;
+      prof.appendChild(o);
+    }
+    $("#profile").value = state.profile;
+    $("#stay").value = state.stayMin;
+    renderDays();
+
+    const bind = (id, key, parse = (v) => v) =>
+      $(id).addEventListener("change", (e) => { state[key] = parse(e.target.value); touched(); });
+    bind("#profile", "profile");
+    bind("#stay", "stayMin", (v) => Math.min(30, Math.max(1, Math.round(Number(v)) || 5)));
+    document.querySelectorAll('input[name="dayMode"]').forEach((r) =>
+      r.addEventListener("change", () => {
+        state.dayMode = r.value;
+        // 切到「分別設定」時先給兩天,照抄目前的設定
+        if (state.dayMode === "each" && state.days.length < 2) state.days.push({ ...state.days[0] });
+        renderDays();
+        renderPicker();
+        touched();
+      })
+    );
+    $("#add-day").addEventListener("click", () => {
+      state.days.push({ ...state.days[state.days.length - 1] });
+      renderDays();
+      touched();
+    });
+
+    // 一次改整張圖的按鈕都可以復原:先存一份,提示列上給「復原」
+    document.querySelectorAll("[data-bulk]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const act = b.dataset.bulk;
+        const before = new Set(state.targets);
+        const doneBefore = activityNames.length - state.targets.size;
+        // 按鈕說的是「已集」;state.targets 存的是還沒集的站
+        if (act === "none") activityNames.forEach((n) => state.targets.add(n));
+        if (act === "all") state.targets.clear();
+        if (act === "invert") activityNames.forEach((n) => (state.targets.has(n) ? state.targets.delete(n) : state.targets.add(n)));
+        renderPicker();
+        touched();
+        undoSnap = before;
+        $("#undo-text").textContent =
+          act === "none" ? `已清空 ${doneBefore} 站的已集標記` : act === "all" ? "已把全部站標成已集" : "已反轉已集/未集";
+        $("#undo").hidden = false;
+        clearTimeout(undoTimer);
+        undoTimer = setTimeout(hideUndo, 15000);
+      })
+    );
+    $("#undo-btn").addEventListener("click", () => {
+      if (!undoSnap) return;
+      state.targets = undoSnap;
+      hideUndo();
+      renderPicker();
+      touched();
+    });
+    $("#go").addEventListener("click", async () => {
+      await compute();
+      // 結果在地圖下方:算完把它捲進畫面
+      if (result) $(".result").scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+    });
+
+    const upd = NET.sources.travelTime.updated;
+    $("#data-note").textContent = `站間時間 ${fmtDate(upd[upd.length - 1])} 北捷開放資料 · 活動站 ${activityNames.length} 站`;
+    const src = $("#sources");
+    for (const s of Object.values(NET.sources)) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = s.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = s.title;
+      li.appendChild(a);
+      src.appendChild(li);
+    }
+  }
+
+  function touched() {
+    save();
+    $("#go").textContent = result ? "重新計算" : "計算路線";
+  }
+
+  // ---------- 車站點選 ----------
+  function renderPicker() {
+    const root = $("#picker");
+    root.innerHTML = "";
+    for (const line of LINE_IDS) {
+      if (excluded.has(line)) continue;
+      const list = stationsOnLine(line);
+      const group = document.createElement("div");
+      group.className = "line-group";
+      group.style.setProperty("--line", NET.lines[line].color);
+      group.style.setProperty("--line-ink", lineInk(line));
+
+      const head = document.createElement("div");
+      head.className = "line-head";
+      const done = list.filter((s) => !state.targets.has(s.name)).length;
+      head.innerHTML = `<span class="line-swatch"></span><span class="line-title">${NET.lines[line].name}</span>
+        <span class="line-count">已集 ${done}/${list.length}</span>`;
+      const all = document.createElement("button");
+      all.type = "button";
+      all.textContent = "整條已集";
+      all.addEventListener("click", () => { list.forEach((s) => state.targets.delete(s.name)); renderPicker(); touched(); });
+      const none = document.createElement("button");
+      none.type = "button";
+      none.textContent = "整條未集";
+      none.addEventListener("click", () => { list.forEach((s) => state.targets.add(s.name)); renderPicker(); touched(); });
+      head.append(all, none);
+
+      const chips = document.createElement("div");
+      chips.className = "chips";
+      for (const s of list) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.setAttribute("aria-pressed", state.targets.has(s.name) ? "false" : "true");
+        b.title = state.targets.has(s.name) ? "還沒集到(點一下標成已集)" : "已集到(點一下標成還沒集)";
+        b.innerHTML = `<span class="code">${s.codes[line]}</span>${s.name}`;
+        b.addEventListener("click", () => toggleStation(s.name));
+        chips.appendChild(b);
+      }
+      group.append(head, chips);
+      root.appendChild(group);
+    }
+    $("#tally").textContent = `已集 ${activityNames.length - state.targets.size} / ${activityNames.length}`;
+    $(".clear-done").disabled = state.targets.size === activityNames.length;
+    pmap.showProgress({ done: doneSet(), starts: [...new Set(activeDays().map((d) => d.start))] });
+  }
+
+  const doneSet = (targets = state.targets) => new Set(activityNames.filter((n) => !targets.has(n)));
+
+  function toggleStation(name) {
+    if (!activityNames.includes(name)) return;
+    state.targets.has(name) ? state.targets.delete(name) : state.targets.add(name);
+    hideUndo(); // 之後又手動點過,「復原」會蓋掉這些點選,所以收起來
+    renderPicker();
+    touched();
+  }
+
+  // ---------- 計算 ----------
+  function budgetFor(k) {
+    return Math.min(650, 120 + k * 5);
+  }
+
+  async function compute() {
+    const token = ++runToken;
+    $("#error").hidden = true;
+    if (!state.targets.size) {
+      showError("全部都集到了!如果不是,在上面的地圖把還沒集的站取消打勾,再按計算。");
+      return;
+    }
+    const bad = activeDays().findIndex((d) => E.dayWindow(d.startTime, d.dayEnd).error);
+    if (bad >= 0) {
+      const d = activeDays()[bad];
+      showError(`${state.dayMode === "same" ? "每天" : `第 ${bad + 1} 天`}:${E.dayWindow(d.startTime, d.dayEnd).error}。`);
+      return;
+    }
+    $("#idle-note").hidden = true;
+    const go = $("#go");
+    go.disabled = true;
+    go.textContent = "計算中…";
+    $("#progress").hidden = false;
+    setProgress(0);
+    await nextFrame();
+    try {
+      const days = activeDays().map((d) => ({ ...d }));
+      const gen = E.planDays(NET, {
+        targets: [...state.targets],
+        days,
+        stayMin: state.stayMin,
+        profile: state.profile,
+        graph: graphCache[state.profile],
+        timeBudgetMs: budgetFor(state.targets.size),
+      });
+      let last = performance.now();
+      let res;
+      for (;;) {
+        const step = gen.next();
+        if (step.done) { res = step.value; break; }
+        if (performance.now() - last > 40) {
+          setProgress(step.value);
+          await nextFrame();
+          if (token !== runToken) return;
+          last = performance.now();
+        }
+      }
+      graphCache[state.profile] = res.graph;
+      result = { ...res, params: { ...state, days, targets: [...state.targets] } };
+      selected = 0;
+      dayView = 1;
+      renderResult();
+    } catch (err) {
+      showError("算不出來:" + err.message);
+    } finally {
+      if (token === runToken) {
+        go.disabled = false;
+        go.textContent = "重新計算";
+        $("#progress").hidden = true;
+      }
+    }
+  }
+
+  const nextFrame = () => new Promise((r) => setTimeout(r, 0));
+  function setProgress(p) {
+    $("#bar").style.width = `${Math.round(p * 100)}%`;
+    $("#progress-text").textContent = `搜尋路線 ${Math.round(p * 100)}%`;
+  }
+  function showError(msg) {
+    const el = $("#error");
+    el.textContent = msg;
+    el.hidden = false;
+  }
+
+  // ---------- 格式 ----------
+  function fmtDate(yyyymmdd) {
+    const s = String(yyyymmdd);
+    return `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`;
+  }
+  function fmtDur(sec) {
+    const m = Math.round(sec / 60);
+    const h = Math.floor(m / 60);
+    return h ? `${h} 小時 ${String(m % 60).padStart(2, "0")} 分` : `${m} 分`;
+  }
+  function fmtDurParts(sec) {
+    const m = Math.round(sec / 60);
+    return { h: Math.floor(m / 60), m: m % 60 };
+  }
+  function fmtClock(min) {
+    const m = Math.round(min);
+    const hh = Math.floor(m / 60) % 24;
+    return `${String(hh).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  }
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const endText = (d) => (d.endMode === "free" ? "停在最後一站" : `回到 ${d.end}`);
+
+  function badges(name) {
+    const s = byName.get(name);
+    return Object.entries(s.codes)
+      .map(([l, c]) => `<span class="badge" style="--line:${NET.lines[l].color};--line-ink:${lineInk(l)}">${c}</span>`)
+      .join("");
+  }
+
+  function optionLabel(i, n) {
+    if (n === 1) return "最佳解";
+    if (i === 0) return "最省時";
+    if (i === n - 1) return "最少換車";
+    return "折衷";
+  }
+
+  // ---------- 結果 ----------
+  function currentDays() {
+    const p = result.params;
+    return E.scheduleDays(result.options[selected], { stayMin: p.stayMin });
+  }
+
+  function renderResult() {
+    const opts = result.options;
+    const box = $("#options");
+    box.innerHTML = "";
+    opts.forEach((o, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "option";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", i === selected ? "true" : "false");
+      const d = fmtDurParts(o.totalSec);
+      b.innerHTML = `<span class="tag">${optionLabel(i, opts.length)}</span>
+        <span class="big">${d.h}<small>小時</small>${String(d.m).padStart(2, "0")}<small>分</small></span>
+        <span class="xf">換車 <b>${o.transfers}</b> 次 · 乘車 ${fmtDur(o.rideSec)}</span>`;
+      b.addEventListener("click", () => { selected = i; renderResult(); });
+      box.appendChild(b);
+    });
+
+    const o = opts[selected];
+    const days = currentDays();
+    const p = result.params;
+    $("#summary").innerHTML = `
+      <dl class="metric"><dt>採點</dt><dd>${o.stayCount} 站</dd></dl>
+      <dl class="metric"><dt>天數</dt><dd>${days.length} 天</dd></dl>
+      <dl class="metric"><dt>總時間</dt><dd>${fmtDur(o.totalSec)}</dd></dl>
+      <dl class="metric"><dt>乘車與候車</dt><dd>${fmtDur(o.rideSec)}</dd></dl>
+      <dl class="metric"><dt>停留</dt><dd>${fmtDur(o.stayCount * p.stayMin * 60)}</dd></dl>
+      <dl class="metric"><dt>站內換車</dt><dd>${o.transfers} 次</dd></dl>
+      <button type="button" class="ghost copy" id="copy">複製文字攻略</button>`;
+    $("#copy").addEventListener("click", () => copyText(o, days));
+
+    const notes = [];
+    const auto = days.filter((d) => d.auto);
+    if (auto.length) {
+      const lastSet = p.dayMode === "same" ? "每天" : `第 ${p.days.length} 天`;
+      notes.push(`設定的天數排不下,多加了 ${auto.length} 天,起終點沿用${lastSet}的設定。`);
+    }
+    const over = days.filter((d) => d.overMin > 0.5);
+    if (over.length) notes.push(`${over.map((d) => `第 ${d.index} 天`).join("、")}會超過收工時間,可以把收工時間延後或多加一天。`);
+    const n = $("#plan-note");
+    n.textContent = notes.join(" ");
+    n.hidden = !notes.length;
+
+    renderDay(days);
+  }
+
+  function renderDayTabs(days) {
+    const tabs = $("#day-tabs");
+    tabs.innerHTML = "";
+    tabs.hidden = days.length < 2;
+    const ids = [...days.map((d) => d.index), 0];
+    ids.forEach((idx) => {
+      const d = days[idx - 1];
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", idx === dayView ? "true" : "false");
+      b.innerHTML = idx
+        ? `<strong>第 ${idx} 天</strong><small>${d.stamps} 站 · ${fmtClock(d.begin)}–${fmtClock(d.finish)}</small>`
+        : `<strong>全部</strong><small>${days.length} 天總覽</small>`;
+      b.addEventListener("click", () => {
+        dayView = idx;
+        renderDay(days);
+        const top = $("#day-tabs").getBoundingClientRect().top;
+        if (top < 0) $("#day-tabs").scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+      });
+      tabs.appendChild(b);
+    });
+  }
+
+  function renderDay(days) {
+    if (days.length < 2 || dayView > days.length) dayView = 1;
+    renderDayTabs(days);
+    const p = result.params;
+    const root = $("#itinerary");
+    root.innerHTML = "";
+    let tilt = 0;
+    const shown = days.filter((d) => !dayView || d.index === dayView);
+    for (const d of shown) {
+      const sec = document.createElement("section");
+      sec.className = "day";
+      sec.dataset.day = d.index;
+      const route = `${esc(d.start)} 出發 · ${esc(endText(d))}`;
+      const over = d.overMin > 0.5 ? `<em class="over">超過收工 ${Math.round(d.overMin)} 分</em>` : "";
+      sec.innerHTML = `<h3 class="day-head"><strong>第 ${d.index} 天</strong><span>${fmtClock(d.begin)} – ${fmtClock(d.finish)}</span><em>${route}</em>${over}</h3>`;
+      if (!d.items.length) {
+        sec.insertAdjacentHTML("beforeend", `<p class="empty">這天的時間不夠去任何一站,所以沒有排。</p>`);
+        root.appendChild(sec);
+        continue;
+      }
+      const ol = document.createElement("ol");
+      ol.className = "tl";
+      const first = document.createElement("li");
+      first.className = "tl-start";
+      first.innerHTML = `<time>${fmtClock(d.begin)}</time><span class="start-dot" aria-hidden="true">起</span><div class="st-line"><span class="st-name">${esc(d.start)}</span>${badges(d.start)}<span class="st-meta">出發</span></div>`;
+      ol.appendChild(first);
+      for (const it of d.items) {
+        const li = document.createElement("li");
+        if (it.type === "stamp" || it.type === "end") {
+          const n = [...it.station].length;
+          const cls = n <= 2 ? "l2" : n <= 3 ? "l3" : n <= 4 ? "l4" : "l5";
+          tilt = (tilt + 1) % 4;
+          li.className = "tl-stamp";
+          li.dataset.station = it.station;
+          const isEnd = it.type === "end";
+          li.innerHTML = `<time>${fmtClock(it.at)}</time>
+            <div class="stamp ${cls}${isEnd ? " end" : ""}" style="--tilt:${[-7, 4, -3, 6][tilt]}deg" aria-hidden="true">${esc(it.station)}</div>
+            <div><div class="st-line"><span class="st-name">${esc(it.station)}</span>${badges(it.station)}</div>
+            <div class="st-meta">${isEnd ? "抵達終點" : `出站集章 · 停留 ${p.stayMin} 分 · ${fmtClock(it.at)}–${fmtClock(it.leave)}`}</div></div>`;
+        } else {
+          li.className = "tl-leg";
+          const steps = it.leg.steps;
+          const rail = steps
+            .map((s) => `<span style="--line:${NET.lines[s.line].color};--grow:${Math.max(1, Math.round((s.rideSec + s.waitSec) / 60))}"></span>`)
+            .join("");
+          const rides = steps
+            .map((s) => {
+              const xf = s.isTransfer ? `<div class="xfer">在 ${esc(s.fromStation)} 換車 · 步行約 ${Math.round(s.walkSec / 60)} 分</div>` : "";
+              const walkIn = !s.isTransfer && s.walkSec ? `<div class="xfer">步行約 ${Math.round(s.walkSec / 60)} 分到${esc(NET.lines[s.line].name)}${esc(s.fromStation)}站</div>` : "";
+              return `${xf}${walkIn}<div class="ride" style="--line:${NET.lines[s.line].color};--line-ink:${lineInk(s.line)}">
+                <span class="pill">${esc(NET.lines[s.line].name)}</span>
+                <span class="dir">往 ${s.direction.map(esc).join(" / ")}</span>
+                <span>${s.stopsCount} 站到 ${esc(s.toStation)}</span>
+                <span class="dim">候車約 ${Math.round(s.waitSec / 60)} 分 · 車程 ${Math.max(1, Math.round(s.rideSec / 60))} 分</span></div>${
+                s.exitWalkSec
+                  ? `<div class="xfer">出站後步行約 ${Math.round(s.exitWalkSec / 60)} 分${s.exitWalkTo ? `到 ${esc(s.exitWalkTo)}` : "到集章處"}</div>`
+                  : ""
+              }`;
+            })
+            .join("");
+          li.innerHTML = `<time>${fmtClock(it.depart)}</time><div class="rail" aria-hidden="true">${rail}</div><div class="rides">${rides}</div>`;
+        }
+        ol.appendChild(li);
+      }
+      sec.appendChild(ol);
+      root.appendChild(sec);
+    }
+    renderRouteMap(days);
+  }
+
+  // ---------- 路線圖 ----------
+  function renderRouteMap(days) {
+    const p = result.params;
+    const rides = [], walks = [], stops = [];
+    let n = 0;
+    for (const d of days) {
+      // 單天檢視:其他天只畫淡淡的路線、不編號
+      const active = !dayView || d.index === dayView;
+      for (const it of d.items) {
+        if (it.type === "stamp" && active) stops.push({ name: it.station, n: ++n, active: true });
+        if (it.type !== "leg") continue;
+        let prevTo = it.leg.from;
+        for (const s of it.leg.steps) {
+          const a = Math.min(s.fromPos, s.toPos), b = Math.max(s.fromPos, s.toPos);
+          const seg = s.service.stops.slice(a, b + 1);
+          if (s.fromPos > s.toPos) seg.reverse();
+          rides.push({ line: s.line, stations: seg, active });
+          if (s.walkFrom) walks.push({ from: s.walkFrom, to: s.fromStation, active });
+          else if (prevTo && prevTo !== s.fromStation) walks.push({ from: prevTo, to: s.fromStation, active });
+          if (s.exitWalkTo) walks.push({ from: s.toStation, to: s.exitWalkTo, active });
+          prevTo = s.toStation;
+        }
+      }
+    }
+    const shown = days.filter((d) => !dayView || d.index === dayView);
+    rmap.showRoute({
+      starts: [...new Set(shown.filter((d) => d.items.length).map((d) => d.start))],
+      ends: [...new Set(shown.filter((d) => d.items.some((x) => x.type === "end")).map((d) => d.end))],
+      stops,
+      rides,
+      walks,
+      done: doneSet(new Set(p.targets)),
+    });
+    if (dayView) {
+      const names = [];
+      shown.forEach((d) => names.push(d.start));
+      rides.filter((r) => r.active).forEach((r) => names.push(...r.stations));
+      rmap.focus(names);
+    } else rmap.reset();
+  }
+
+  function jumpTo(name) {
+    let li = [...document.querySelectorAll("#itinerary .tl-stamp")].find((x) => x.dataset.station === name);
+    if (!li && dayView) {
+      // 那一站排在別天:切過去再找
+      const days = currentDays();
+      const d = days.find((x) => x.items.some((it) => it.type === "stamp" && it.station === name));
+      if (!d) return;
+      dayView = d.index;
+      renderDay(days);
+      li = [...document.querySelectorAll("#itinerary .tl-stamp")].find((x) => x.dataset.station === name);
+    }
+    if (!li) return;
+    li.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center" });
+    li.classList.remove("flash");
+    void li.offsetWidth;
+    li.classList.add("flash");
+  }
+
+  function planText(o, days) {
+    const p = result.params;
+    const lines = [`捷運採點攻略 · ${o.stayCount} 站 · ${days.length} 天 · 總時間 ${fmtDur(o.totalSec)} · 換車 ${o.transfers} 次`];
+    for (const d of days) {
+      lines.push("", `【第 ${d.index} 天】${fmtClock(d.begin)}–${fmtClock(d.finish)} ${d.start} 出發,${endText(d)}`);
+      for (const it of d.items) {
+        if (it.type === "stamp") lines.push(`${fmtClock(it.at)} ◎ ${it.station} 出站集章(${p.stayMin} 分)`);
+        else if (it.type === "end") lines.push(`${fmtClock(it.at)} ◇ 抵達 ${it.station}`);
+        else {
+          for (const s of it.leg.steps) {
+            const pre = s.isTransfer ? `  換 ` : `  搭 `;
+            lines.push(`${pre}${NET.lines[s.line].name} 往 ${s.direction.join("/")},${s.stopsCount} 站到 ${s.toStation}`);
+          }
+        }
+      }
+    }
+    return lines.join("\n");
+  }
+
+  async function copyText(o, days) {
+    const text = planText(o, days);
+    const btn = $("#copy");
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = "已複製";
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+      ta.remove();
+      btn.textContent = ok ? "已複製" : "瀏覽器不允許複製";
+    }
+    setTimeout(() => (btn.textContent = "複製文字攻略"), 2000);
+  }
+
+  // ---------- 啟動 ----------
+  pmap = window.MetroMap.create($("#pmap"), NET, { onStation: toggleStation });
+  rmap = window.MetroMap.create($("#rmap"), NET, { onStation: jumpTo });
+  initForm();
+  renderPicker();
+  // 第一次打開(沒有存檔)不自動算:109 站全排在手機上要好幾秒,而使用者還沒標任何進度
+  if (saved) compute();
+  else $("#idle-note").hidden = false;
+})();
+</script>
+
+</html>
